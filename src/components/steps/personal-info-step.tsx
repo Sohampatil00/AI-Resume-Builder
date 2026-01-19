@@ -26,7 +26,7 @@ export function PersonalInfoStep() {
             <FormItem>
               <FormLabel>Full Name</FormLabel>
               <FormControl>
-                <Input placeholder="John Doe" {...field} />
+                <Input placeholder="Ramesh Patel" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -39,7 +39,7 @@ export function PersonalInfoStep() {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="john.doe@example.com" {...field} />
+                <Input placeholder="ramesh.patel@example.com" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -52,7 +52,7 @@ export function PersonalInfoStep() {
             <FormItem>
               <FormLabel>Phone Number</FormLabel>
               <FormControl>
-                <Input placeholder="(123) 456-7890" {...field} />
+                <Input placeholder="+91 12345 67890" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -65,7 +65,7 @@ export function PersonalInfoStep() {
             <FormItem>
               <FormLabel>LinkedIn Profile URL</FormLabel>
               <FormControl>
-                <Input placeholder="https://linkedin.com/in/johndoe" {...field} />
+                <Input placeholder="https://linkedin.com/in/rameshpatel" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -78,7 +78,7 @@ export function PersonalInfoStep() {
             <FormItem>
               <FormLabel>GitHub Profile URL</FormLabel>
               <FormControl>
-                <Input placeholder="https://github.com/johndoe" {...field} />
+                <Input placeholder="https://github.com/rameshpatel" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -91,7 +91,7 @@ export function PersonalInfoStep() {
             <FormItem>
               <FormLabel>Personal Website URL</FormLabel>
               <FormControl>
-                <Input placeholder="https://johndoe.com" {...field} />
+                <Input placeholder="https://rameshpatel.com" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
