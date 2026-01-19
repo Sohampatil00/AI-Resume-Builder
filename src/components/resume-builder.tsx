@@ -23,6 +23,7 @@ import { PublicationsStep } from './steps/publications-step';
 import { HonorsAwardsStep } from './steps/honors-awards-step';
 import { VolunteerExperienceStep } from './steps/volunteer-experience-step';
 import { Info } from 'lucide-react';
+import { ThemeToggle } from './theme-toggle';
 
 const personalInfoSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -270,14 +271,17 @@ export function ResumeBuilder() {
               the help of AI.
             </CardDescription>
           </div>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={fillAllWithDummyData}
-          >
-            <Info className="mr-2 h-4 w-4" />
-            Fill with Dummy Data
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={fillAllWithDummyData}
+            >
+              <Info className="mr-2 h-4 w-4" />
+              Fill with Dummy Data
+            </Button>
+            <ThemeToggle />
+          </div>
         </div>
       </CardHeader>
       <FormProvider {...methods}>
