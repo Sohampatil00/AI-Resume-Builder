@@ -263,7 +263,7 @@ export function ResumeBuilder() {
         <div className="flex items-center justify-between">
           <div className="space-y-1.5">
             <CardTitle className="font-headline text-3xl text-primary">
-              College Resume AI
+              AI Resume Builder
             </CardTitle>
             <CardDescription>
               A simple resume builder to generate a professional LaTeX resume with

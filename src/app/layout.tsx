@@ -3,7 +3,7 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
-  title: 'College Resume AI',
+  title: 'AI Resume Builder',
   description: 'Generate a professional LaTeX resume with the help of AI',
 };
 
