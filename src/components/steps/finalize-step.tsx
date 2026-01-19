@@ -87,7 +87,7 @@ export function FinalizeStep() {
         }
 
         const canvas = await html2canvas(previewElement, {
-            scale: 2,
+            scale: 3,
             useCORS: true,
         });
         
@@ -133,12 +133,12 @@ export function FinalizeStep() {
         <h2 className="text-2xl font-headline font-semibold text-primary">
           Choose Your Template & Download
         </h2>
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-          <div className="space-y-4">
-            <div className="space-y-2">
+        <div className="grid grid-cols-1 gap-6">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="w-full space-y-2 sm:w-auto">
               <Label htmlFor="template-select">Resume Template</Label>
               <Select value={selectedTemplate} onValueChange={setSelectedTemplate}>
-                <SelectTrigger id="template-select" className="w-full">
+                <SelectTrigger id="template-select" className="w-full sm:w-[200px]">
                   <SelectValue placeholder="Select a template" />
                 </SelectTrigger>
                 <SelectContent>
@@ -150,29 +150,34 @@ export function FinalizeStep() {
                 </SelectContent>
               </Select>
             </div>
-            <div className='flex flex-col space-y-2'>
-                 <Button onClick={handlePdfDownload} disabled={isGeneratingPdf} className="w-full">
-                    {isGeneratingPdf ? (
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    ) : (
-                        <FileDown className="mr-2 h-4 w-4" />
-                    )}
-                    Download .pdf File
-                 </Button>
-                 <Button onClick={handleTexDownload} disabled={isGeneratingTex} className="w-full">
-                    {isGeneratingTex ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    ) : (
-                    <FileDown className="mr-2 h-4 w-4" />
-                    )}
-                    Download .tex File
-                </Button>
+            <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+              <Button onClick={handlePdfDownload} disabled={isGeneratingPdf} className="w-full">
+                {isGeneratingPdf ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <FileDown className="mr-2 h-4 w-4" />
+                )}
+                Download .pdf File
+              </Button>
+              <Button onClick={handleTexDownload} disabled={isGeneratingTex} className="w-full">
+                {isGeneratingTex ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <FileDown className="mr-2 h-4 w-4" />
+                )}
+                Download .tex File
+              </Button>
             </div>
           </div>
-          <div className="flex items-center justify-center rounded-lg border bg-secondary/50 p-4 overflow-hidden">
-              <div ref={resumePreviewRef} className="transform scale-[0.5] origin-top-left -ml-16 -mt-16 md:scale-[0.6] md:-ml-0 md:-mt-12">
+          <div className="rounded-lg border bg-secondary/50 p-4 sm:p-8 overflow-x-auto">
+            <div className="flex justify-center">
+              <div
+                ref={resumePreviewRef}
+                className="transform origin-top scale-[0.8] bg-white shadow-lg"
+              >
                 <SelectedTemplateComponent data={resumeData as ResumeData} />
               </div>
+            </div>
           </div>
         </div>
       </div>
