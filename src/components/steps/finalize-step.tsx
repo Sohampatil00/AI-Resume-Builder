@@ -73,52 +73,72 @@ export function FinalizeStep() {
   const handlePdfDownload = async () => {
     const data = validateData();
     if (!data || !resumePreviewRef.current) {
-        return;
+      return;
     }
 
     setIsGeneratingPdf(true);
+
+    const originalPreviewElement = resumePreviewRef.current.querySelector(
+      '[data-html2canvas-target]'
+    ) as HTMLElement;
+
+    if (!originalPreviewElement) {
+      toast({
+        variant: 'destructive',
+        title: 'PDF Generation Failed',
+        description: 'Could not find the resume preview to render.',
+      });
+      setIsGeneratingPdf(false);
+      return;
+    }
+
+    // Create a clone of the element to render at full size off-screen
+    const elementToRender = originalPreviewElement.cloneNode(true) as HTMLElement;
     
+    const container = document.createElement('div');
+    container.style.position = 'absolute';
+    container.style.left = '-9999px';
+    container.style.top = '0';
+    container.appendChild(elementToRender);
+    document.body.appendChild(container);
+
     try {
-        // Give browser time to render fonts
-        await new Promise(resolve => setTimeout(resolve, 1000));
+      // Give browser time to render fonts
+      await new Promise((resolve) => setTimeout(resolve, 500));
 
-        const previewElement = resumePreviewRef.current.querySelector(
-            '[data-html2canvas-target]'
-        ) as HTMLElement;
+      const canvas = await html2canvas(elementToRender, {
+        scale: 3, // Increased scale for much higher resolution
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff',
+        letterRendering: true,
+      });
 
-        if (!previewElement) {
-            throw new Error("Could not find preview element to render.");
-        }
+      const imgData = canvas.toDataURL('image/png', 1.0);
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4',
+      });
 
-        const canvas = await html2canvas(previewElement, {
-            scale: 2, // Using a more moderate scale
-            useCORS: true,
-            logging: false, // Turn off logging
-            backgroundColor: '#ffffff', // Explicitly set background
-        });
-        
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF({
-            orientation: 'portrait',
-            unit: 'mm',
-            format: 'a4',
-        });
-        
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = pdf.internal.pageSize.getHeight();
-        
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-        pdf.save('resume.pdf');
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
 
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save('resume.pdf');
     } catch (error) {
-        console.error("PDF generation error:", error);
-        toast({
-            variant: 'destructive',
-            title: 'PDF Generation Failed',
-            description: error instanceof Error ? error.message : 'An unknown error occurred while generating the PDF.',
-        });
+      console.error('PDF generation error:', error);
+      toast({
+        variant: 'destructive',
+        title: 'PDF Generation Failed',
+        description:
+          error instanceof Error
+            ? error.message
+            : 'An unknown error occurred while generating the PDF.',
+      });
     } finally {
-        setIsGeneratingPdf(false);
+      document.body.removeChild(container); // Clean up the cloned element
+      setIsGeneratingPdf(false);
     }
   };
 
