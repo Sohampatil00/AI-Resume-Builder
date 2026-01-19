@@ -15,6 +15,27 @@ const escapeLatex = (str: string | undefined): string => {
     .replace(/\^/g, '\\textasciicircum{}');
 };
 
+const getUrlUsername = (url: string | undefined) => {
+    if (!url) return '';
+    try {
+        const path = new URL(url).pathname;
+        return path.substring(1).split('/')[0];
+    } catch {
+        return url;
+    }
+}
+
+const getDomain = (url: string | undefined): string => {
+  if (!url) return '';
+  try {
+    const fullUrl = url.startsWith('http') ? url : `https://${url}`;
+    return new URL(fullUrl).hostname.replace('www.', '');
+  } catch {
+    return url;
+  }
+};
+
+
 const generateModernTemplate = (data: ResumeData, template: string): string => {
   let generated = template;
 
@@ -161,10 +182,84 @@ const generateElegantTemplate = (data: ResumeData, template: string): string => 
   return generated;
 };
 
+const generateClassicTemplate = (data: ResumeData, template: string): string => {
+  let generated = template;
+  const { personalInfo, education, experience, projects, skills } = data;
+
+  generated = generated.replace('%%NAME%%', escapeLatex(personalInfo.name));
+  generated = generated.replace(/%%EMAIL%%/g, escapeLatex(personalInfo.email));
+  generated = generated.replace('%%PHONE%%', escapeLatex(personalInfo.phone));
+
+  if (personalInfo.website) {
+    generated = generated.replace('%%WEBSITE_SECTION%%', `\\href{${escapeLatex(personalInfo.website)}}{Website: ${escapeLatex(getDomain(personalInfo.website))}} & Mobile:~~~${escapeLatex(personalInfo.phone)} \\\\`);
+  } else {
+    generated = generated.replace('%%WEBSITE_SECTION%%', ` & Mobile:~~~${escapeLatex(personalInfo.phone)} \\\\`);
+  }
+  
+  if (personalInfo.github) {
+    generated = generated.replace('%%GITHUB_SECTION%%', `\\href{${escapeLatex(personalInfo.github)}}{Github: ~~github.com/${escapeLatex(getUrlUsername(personalInfo.github))}} \\\\`);
+  } else {
+    generated = generated.replace('%%GITHUB_SECTION%%', '');
+  }
+
+  if (personalInfo.linkedin) {
+    generated = generated.replace('%%LINKEDIN_SECTION%%', `\\href{${escapeLatex(personalInfo.linkedin)}}{LinkedIn: ~~${escapeLatex(getUrlUsername(personalInfo.linkedin))}} \\\\`);
+  } else {
+    generated = generated.replace('%%LINKEDIN_SECTION%%', '');
+  }
+  
+  // Education
+  if (education.length > 0) {
+    const educationItems = education.map(edu => {
+      const endDate = edu.endMonth === 'Present' ? 'Present' : `${escapeLatex(edu.endMonth)} ${escapeLatex(edu.endYear)}`;
+      const startDate = `${escapeLatex(edu.startMonth)} ${escapeLatex(edu.startYear)}`;
+      return `\\resumeSubheading{${escapeLatex(edu.school)}}{${startDate} - ${endDate}}{${escapeLatex(edu.degree)} in ${escapeLatex(edu.major)}}{CGPA: ${escapeLatex(edu.cgpa)}}`;
+    }).join('\n');
+    generated = generated.replace('%%EDUCATION_SECTION%%', `\\section{~~Education}\n  \\resumeSubHeadingListStart\n${educationItems}\n  \\resumeSubHeadingListEnd`);
+  } else {
+    generated = generated.replace('%%EDUCATION_SECTION%%', '');
+  }
+  
+  // Skills
+  if (skills.languages || skills.frameworks || skills.tools) {
+    let skillsContent = '\\vspace{-5pt}\n\\section{Skills Summary}\n\t\\resumeSubHeadingListStart\n';
+    if(skills.languages) skillsContent += `\t\\resumeSubItem{Languages}{${escapeLatex(skills.languages)}}\n`;
+    if(skills.frameworks) skillsContent += `\t\\resumeSubItem{Frameworks}{${escapeLatex(skills.frameworks)}}\n`;
+    if(skills.tools) skillsContent += `\t\\resumeSubItem{Tools}{${escapeLatex(skills.tools)}}\n`;
+    skillsContent += '\\resumeSubHeadingListEnd';
+    generated = generated.replace('%%SKILLS_SECTION%%', skillsContent);
+  } else {
+    generated = generated.replace('%%SKILLS_SECTION%%', '');
+  }
+
+  // Experience
+  if (experience.length > 0) {
+    const experienceItems = experience.map(exp => {
+      const descriptionItems = exp.description.split('\n').map(line => `\\item ${escapeLatex(line.trim().replace(/^•\s*/, ''))}`).join('\n');
+      return `\\resumeSubheading{${escapeLatex(exp.company)}}{${escapeLatex(exp.startDate)} - ${escapeLatex(exp.endDate)}}{${escapeLatex(exp.title)}}{}\n\\resumeItemListStart\n${descriptionItems}\n\\resumeItemListEnd`
+    }).join('\n\\vspace{-5pt}\n');
+    generated = generated.replace('%%EXPERIENCE_SECTION%%', `\\vspace{-5pt}\n\\section{Experience}\n  \\resumeSubHeadingListStart\n${experienceItems}\n\\resumeSubHeadingListEnd`);
+  } else {
+    generated = generated.replace('%%EXPERIENCE_SECTION%%', '');
+  }
+  
+  // Projects
+  if (projects.length > 0) {
+    const projectItems = projects.map(proj => {
+      const title = proj.technologies ? `${escapeLatex(proj.name)} (${escapeLatex(proj.technologies)})` : escapeLatex(proj.name);
+      return `\\resumeSubItem{${title}}{${escapeLatex(proj.description).replace(/\n/g, ' ')}`;
+    }).join('\n\\vspace{2pt}\n');
+    generated = generated.replace('%%PROJECTS_SECTION%%', `\\vspace{-5pt}\n\\section{Projects}\n\\resumeSubHeadingListStart\n${projectItems}\n\\resumeSubHeadingListEnd`);
+  } else {
+    generated = generated.replace('%%PROJECTS_SECTION%%', '');
+  }
+
+  return generated;
+};
 
 export const generateResume = (
   data: ResumeData,
-  templateId: 'modern' | 'elegant',
+  templateId: 'modern' | 'elegant' | 'classic',
   template: string
 ) => {
   if (templateId === 'modern') {
@@ -172,6 +267,9 @@ export const generateResume = (
   }
   if (templateId === 'elegant') {
     return generateElegantTemplate(data, template);
+  }
+  if (templateId === 'classic') {
+    return generateClassicTemplate(data, template);
   }
   return 'Template not found';
 };

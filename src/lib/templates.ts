@@ -1,5 +1,93 @@
 export const templates = [
   {
+    id: 'classic',
+    name: 'Classic',
+    template: `\\documentclass[a4paper,10pt]{article}
+
+\\usepackage{latexsym}
+\\usepackage[empty]{fullpage}
+\\usepackage{titlesec}
+\\usepackage{marvosym}
+\\usepackage[usenames,dvipsnames]{color}
+\\usepackage{verbatim}
+\\usepackage{enumitem}
+\\usepackage[pdftex]{hyperref}
+\\usepackage{fancyhdr}
+
+\\pagestyle{fancy}
+\\fancyhf{} % clear all header and footer fields
+\\fancyfoot{}
+\\renewcommand{\\headrulewidth}{0pt}
+\\renewcommand{\\footrulewidth}{0pt}
+
+% Adjust margins
+\\addtolength{\\oddsidemargin}{-0.530in}
+\\addtolength{\\evensidemargin}{-0.375in}
+\\addtolength{\\textwidth}{1in}
+\\addtolength{\\topmargin}{-.45in}
+\\addtolength{\\textheight}{1in}
+
+\\urlstyle{rm}
+
+\\raggedbottom
+\\raggedright
+\\setlength{\\tabcolsep}{0in}
+
+% Sections formatting
+\\titleformat{\\section}{
+  \\vspace{-10pt}\\scshape\\raggedright\\large
+}{}{0em}{}[\\color{black}\\titlerule \\vspace{-6pt}]
+
+%-------------------------
+% Custom commands
+\\newcommand{\\resumeItem}[2]{
+  \\item\\small{
+    \\textbf{#1}{: #2 \\vspace{-2pt}}
+  }
+}
+
+\\newcommand{\\resumeSubheading}[4]{
+  \\vspace{-1pt}\\item
+    \\begin{tabular*}{0.97\\textwidth}{l@{\\extracolsep{\\fill}}r}
+      \\textbf{#1} & #2 \\\\
+      \\textit{\\small#3} & \\textit{\\small #4} \\\\
+    \\end{tabular*}\\vspace{-5pt}
+}
+
+\\newcommand{\\resumeSubItem}[2]{\\resumeItem{#1}{#2}\\vspace{-3pt}}
+
+\\renewcommand{\\labelitemii}{$\\circ$}
+
+\\newcommand{\\resumeSubHeadingListStart}{\\begin{itemize}[leftmargin=*]}
+\\newcommand{\\resumeSubHeadingListEnd}{\\end{itemize}}
+\\newcommand{\\resumeItemListStart}{\\begin{itemize}}
+\\newcommand{\\resumeItemListEnd}{\\end{itemize}\\vspace{-5pt}}
+
+%-----------------------------
+%%%%%%  CV STARTS HERE  %%%%%%
+
+\\begin{document}
+
+%----------HEADING-----------------
+\\begin{tabular*}{\\textwidth}{l@{\\extracolsep{\\fill}}r}
+  \\textbf{{\\LARGE %%NAME%%}} & Email: \\href{mailto:%%EMAIL%%}{%%EMAIL%%}\\\\
+  %%WEBSITE_SECTION%%
+  %%GITHUB_SECTION%%
+  %%LINKEDIN_SECTION%%
+\\end{tabular*}
+
+%%EDUCATION_SECTION%%
+	    
+%%SKILLS_SECTION%%
+
+%%EXPERIENCE_SECTION%%
+
+%%PROJECTS_SECTION%%
+
+\\end{document}
+`,
+  },
+  {
     id: 'modern',
     name: 'Modern',
     template: `\\documentclass[letterpaper,11pt]{article}
