@@ -125,6 +125,28 @@ export function FinalizeStep() {
       const pdfHeight = pdf.internal.pageSize.getHeight();
 
       pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+
+      // Add clickable links
+      const linkElements = elementToRender.querySelectorAll('a');
+      const parentRect = elementToRender.getBoundingClientRect();
+
+      linkElements.forEach(link => {
+        const href = link.getAttribute('href');
+        if (href) {
+          const rect = link.getBoundingClientRect();
+          
+          const x = rect.left - parentRect.left;
+          const y = rect.top - parentRect.top;
+
+          const xInMm = (x / parentRect.width) * pdfWidth;
+          const yInMm = (y / parentRect.height) * pdfHeight;
+          const wInMm = (rect.width / parentRect.width) * pdfWidth;
+          const hInMm = (rect.height / parentRect.height) * pdfHeight;
+
+          pdf.link(xInMm, yInMm, wInMm, hInMm, { url: href });
+        }
+      });
+
       pdf.save('resume.pdf');
     } catch (error) {
       console.error('PDF generation error:', error);
