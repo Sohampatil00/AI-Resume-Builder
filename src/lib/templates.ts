@@ -40,10 +40,8 @@ export const templates = [
 
 %-------------------------
 % Custom commands
-\\newcommand{\\resumeItem}[2]{
-  \\item\\small{
-    \\textbf{#1}{: #2 \\vspace{-2pt}}
-  }
+\\newcommand{\\resumeItem}[1]{
+  \\item\\small{#1}
 }
 
 \\newcommand{\\resumeSubheading}[4]{
@@ -54,7 +52,7 @@ export const templates = [
     \\end{tabular*}\\vspace{-5pt}
 }
 
-\\newcommand{\\resumeSubItem}[2]{\\resumeItem{#1}{#2}\\vspace{-3pt}}
+\\newcommand{\\resumeSubItem}[2]{\\item\\small{\\textbf{#1}{: #2}}}
 
 \\renewcommand{\\labelitemii}{$\\circ$}
 

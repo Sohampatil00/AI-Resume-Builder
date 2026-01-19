@@ -19,7 +19,8 @@ const getUrlUsername = (url: string | undefined) => {
     if (!url) return '';
     try {
         const path = new URL(url).pathname;
-        return path.substring(1).split('/')[0];
+        const username = path.split('/').filter(Boolean).pop()
+        return username ? username : url;
     } catch {
         return url;
     }
@@ -235,8 +236,8 @@ const generateClassicTemplate = (data: ResumeData, template: string): string => 
   // Experience
   if (experience.length > 0) {
     const experienceItems = experience.map(exp => {
-      const descriptionItems = exp.description.split('\n').map(line => `\\item ${escapeLatex(line.trim().replace(/^•\s*/, ''))}`).join('\n');
-      return `\\resumeSubheading{${escapeLatex(exp.company)}}{${escapeLatex(exp.startDate)} - ${escapeLatex(exp.endDate)}}{${escapeLatex(exp.title)}}{}\n\\resumeItemListStart\n${descriptionItems}\n\\resumeItemListEnd`
+      const descriptionItems = exp.description.split('\n').map(line => `\\resumeItem{${escapeLatex(line.trim().replace(/^•\s*/, ''))}}`).join('\n');
+      return `\\resumeSubheading{${escapeLatex(exp.company)}}{${escapeLatex(exp.startDate)} - ${escapeLatex(exp.endDate)}}{${escapeLatex(exp.title)}}{}\\resumeItemListStart\n${descriptionItems}\n\\resumeItemListEnd`
     }).join('\n\\vspace{-5pt}\n');
     generated = generated.replace('%%EXPERIENCE_SECTION%%', `\\vspace{-5pt}\n\\section{Experience}\n  \\resumeSubHeadingListStart\n${experienceItems}\n\\resumeSubHeadingListEnd`);
   } else {
