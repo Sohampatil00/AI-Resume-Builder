@@ -95,7 +95,7 @@ export function AIDescriptionGenerator({
           </DialogTitle>
           <DialogDescription>
             {type === 'experience'
-              ? 'Provide some details about the role and let AI write a compelling description.'
+              ? 'Provide some key points about the role and let AI write a compelling summary.'
               : 'Provide a prompt for your project and let AI do the rest.'}
           </DialogDescription>
         </DialogHeader>
@@ -116,11 +116,11 @@ export function AIDescriptionGenerator({
               </div>
               <div className="grid grid-cols-4 items-start gap-4">
                 <Label htmlFor="responsibilities" className="text-right pt-2">
-                  Responsibilities
+                  Key points / Responsibilities
                 </Label>
                 <Textarea
                   id="responsibilities"
-                  placeholder="e.g., Developed new features, managed a team of 5, optimized database queries"
+                  placeholder="e.g., Led a team of 5, Increased user engagement by 20%, Developed a new feature"
                   value={responsibilities}
                   onChange={(e) => setResponsibilities(e.target.value)}
                   className="col-span-3"
@@ -128,11 +128,11 @@ export function AIDescriptionGenerator({
               </div>
               <div className="grid grid-cols-4 items-start gap-4">
                 <Label htmlFor="skills" className="text-right pt-2">
-                  Skills Used
+                  Skills / Technologies Used
                 </Label>
                 <Textarea
                   id="skills"
-                  placeholder="e.g., React, Node.js, Python, SQL"
+                  placeholder="e.g., React, Node.js, Python, SQL, Figma"
                   value={skills}
                   onChange={(e) => setSkills(e.target.value)}
                   className="col-span-3"

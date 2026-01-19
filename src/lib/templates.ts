@@ -70,8 +70,7 @@ export const templates = [
 \\begin{tabular*}{\\textwidth}{l@{\\extracolsep{\\fill}}r}
   \\textbf{{\\LARGE %%NAME%%}} & Email: \\href{mailto:%%EMAIL%%}{%%EMAIL%%}\\\\
   %%WEBSITE_SECTION%%
-  %%GITHUB_SECTION%%
-  %%LINKEDIN_SECTION%%
+  %%GITHUB_LINKEDIN_SECTION%%
 \\end{tabular*}
 
 %%EDUCATION_SECTION%%

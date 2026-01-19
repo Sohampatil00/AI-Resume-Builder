@@ -22,7 +22,7 @@ export const ClassicTemplate = ({ data }: { data: ResumeData }) => {
         <div className='col-span-1'>{personalInfo.website && <><a href={personalInfo.website} className="underline">Website: {personalInfo.website.replace(/https?:\/\//, '')}</a></>}</div>
         <div className='text-right col-span-1'>{personalInfo.phone && <>Mobile: {personalInfo.phone}</>}</div>
         <div className='col-span-1'>{personalInfo.github && <><a href={personalInfo.github} className="underline">Github: github.com/{getUsername(personalInfo.github)}</a></>}</div>
-        <div className='col-span-1'>{personalInfo.linkedin && <><a href={personalInfo.linkedin} className="underline">LinkedIn: {personalInfo.linkedin.replace(/https?:\/\/(www.)?/, '')}</a></>}</div>
+        <div className='text-right col-span-1'>{personalInfo.linkedin && <><a href={personalInfo.linkedin} className="underline">LinkedIn: {personalInfo.linkedin.replace(/https?:\/\/(www.)?/, '')}</a></>}</div>
       </div>
 
       {/* Education */}

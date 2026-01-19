@@ -32,7 +32,7 @@ const prompt = ai.definePrompt({
   input: {schema: GenerateProjectDescriptionInputSchema},
   output: {schema: GenerateProjectDescriptionOutputSchema},
   prompt: `You are an expert at writing compelling descriptions of personal projects for resumes.
-  Given a short prompt, you will generate a detailed and engaging description of the project.
+  Given a short prompt, you will generate a concise and impactful description of the project (1-3 sentences).
   
   Prompt: {{{prompt}}}`,
 });

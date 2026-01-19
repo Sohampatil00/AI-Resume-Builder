@@ -34,14 +34,16 @@ const prompt = ai.definePrompt({
   name: 'generateJobDescriptionPrompt',
   input: {schema: GenerateJobDescriptionInputSchema},
   output: {schema: GenerateJobDescriptionOutputSchema},
-  prompt: `You are an AI assistant designed to write compelling job descriptions.
+  prompt: `You are an AI assistant designed to write compelling resume descriptions for job experiences.
 
-  Based on the job title, company name, responsibilities and required skills, generate a professional and engaging job description.
+  Based on the job title, company name, responsibilities and skills, generate a concise summary of achievements and responsibilities in 2-4 bullet points.
+  
+  Start each bullet point with a '•' symbol.
 
   Job Title: {{{jobTitle}}}
   Company Name: {{{companyName}}}
-  Responsibilities: {{{responsibilities}}}
-  Required Skills: {{{requiredSkills}}}
+  Key points / Responsibilities: {{{responsibilities}}}
+  Skills / Technologies Used: {{{requiredSkills}}}
 
   Job Description:`,
 });

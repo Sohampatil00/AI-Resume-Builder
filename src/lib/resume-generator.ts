@@ -243,7 +243,6 @@ const generateClassicTemplate = (data: ResumeData, template: string): string => 
 
   generated = generated.replace('%%NAME%%', escapeLatex(personalInfo.name));
   generated = generated.replace(/%%EMAIL%%/g, escapeLatex(personalInfo.email));
-  generated = generated.replace('%%PHONE%%', escapeLatex(personalInfo.phone));
 
   if (personalInfo.website) {
     generated = generated.replace('%%WEBSITE_SECTION%%', `\\href{${escapeLatex(personalInfo.website)}}{Website: ${escapeLatex(getDomain(personalInfo.website))}} & Mobile:~~~${escapeLatex(personalInfo.phone)} \\\\`);
@@ -251,16 +250,19 @@ const generateClassicTemplate = (data: ResumeData, template: string): string => 
     generated = generated.replace('%%WEBSITE_SECTION%%', ` & Mobile:~~~${escapeLatex(personalInfo.phone)} \\\\`);
   }
   
+  let githubLinkedinLine = '';
   if (personalInfo.github) {
-    generated = generated.replace('%%GITHUB_SECTION%%', `\\href{${escapeLatex(personalInfo.github)}}{Github: ~~github.com/${escapeLatex(getUrlUsername(personalInfo.github))}} \\\\`);
-  } else {
-    generated = generated.replace('%%GITHUB_SECTION%%', '');
+    githubLinkedinLine += `\\href{${escapeLatex(personalInfo.github)}}{Github: ~~github.com/${escapeLatex(getUrlUsername(personalInfo.github))}}`;
   }
-
+  githubLinkedinLine += ' & ';
   if (personalInfo.linkedin) {
-    generated = generated.replace('%%LINKEDIN_SECTION%%', `\\href{${escapeLatex(personalInfo.linkedin)}}{LinkedIn: ~~${escapeLatex(getUrlUsername(personalInfo.linkedin))}} \\\\`);
+    githubLinkedinLine += `\\href{${escapeLatex(personalInfo.linkedin)}}{LinkedIn: ~~${escapeLatex(personalInfo.linkedin.replace(/https?:\/\/(www.)?/, ''))}}`;
+  }
+  
+  if(personalInfo.github || personalInfo.linkedin) {
+      generated = generated.replace('%%GITHUB_LINKEDIN_SECTION%%', githubLinkedinLine + '\\\\');
   } else {
-    generated = generated.replace('%%LINKEDIN_SECTION%%', '');
+      generated = generated.replace('%%GITHUB_LINKEDIN_SECTION%%', '');
   }
   
   // Education
