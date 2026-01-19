@@ -1,0 +1,48 @@
+export type PersonalInfo = {
+  name: string;
+  email: string;
+  phone: string;
+  linkedin: string;
+  github: string;
+  website: string;
+};
+
+export type Education = {
+  id: string;
+  school: string;
+  degree: string;
+  major: string;
+  gpa: string;
+  startDate: string;
+  endDate: string;
+};
+
+export type Experience = {
+  id: string;
+  company: string;
+  title: string;
+  startDate: string;
+  endDate: string;
+  description: string;
+};
+
+export type Project = {
+  id: string;
+  name: string;
+  description: string;
+  technologies: string;
+};
+
+export type Skills = {
+  languages: string;
+  frameworks: string;
+  tools: string;
+};
+
+export type ResumeData = {
+  personalInfo: PersonalInfo;
+  education: Education[];
+  experience: Experience[];
+  projects: Project[];
+  skills: Skills;
+};

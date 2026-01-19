@@ -1,3 +1,16 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "template-modern-preview",
+      "description": "Preview of the modern resume template",
+      "imageUrl": "https://images.unsplash.com/photo-1723095136747-20a24afcee20?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxyZXN1bWUlMjBkb2N1bWVudHxlbnwwfHx8fDE3Njg4MjI5OTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "resume document"
+    },
+    {
+      "id": "template-classic-preview",
+      "description": "Preview of the classic resume template",
+      "imageUrl": "https://images.unsplash.com/photo-1723095136747-20a24afcee20?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxyZXN1bWUlMjBkb2N1bWVudHxlbnwwfHx8fDE3Njg4MjI5OTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "resume document"
+    }
+  ]
 }
