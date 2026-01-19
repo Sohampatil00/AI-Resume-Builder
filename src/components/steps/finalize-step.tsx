@@ -89,6 +89,7 @@ export function FinalizeStep() {
         const canvas = await html2canvas(previewElement, {
             scale: 3,
             useCORS: true,
+            letterRendering: true,
         });
         
         const imgData = canvas.toDataURL('image/png');

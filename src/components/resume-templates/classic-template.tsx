@@ -14,7 +14,7 @@ export const ClassicTemplate = ({ data }: { data: ResumeData }) => {
   }
 
   return (
-    <div data-html2canvas-target className="bg-white text-black p-8 font-serif text-[10pt]" style={{ width: '210mm', minHeight: '297mm' }}>
+    <div data-html2canvas-target className="bg-white text-black p-8 font-serif text-[10pt] leading-normal" style={{ width: '210mm', minHeight: '297mm' }}>
       {/* Header */}
       <div className="grid grid-cols-2 text-sm mb-2">
         <div className='font-bold text-2xl col-span-1'>{personalInfo.name}</div>
