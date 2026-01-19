@@ -77,6 +77,7 @@ export function FinalizeStep() {
     }
 
     setIsGeneratingPdf(true);
+    await new Promise(resolve => setTimeout(resolve, 500));
     try {
         const previewElement = resumePreviewRef.current.querySelector(
             '[data-html2canvas-target]'
@@ -89,7 +90,6 @@ export function FinalizeStep() {
         const canvas = await html2canvas(previewElement, {
             scale: 3,
             useCORS: true,
-            letterRendering: true,
         });
         
         const imgData = canvas.toDataURL('image/png');
