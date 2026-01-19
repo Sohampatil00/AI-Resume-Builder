@@ -1,29 +1,17 @@
 'use client';
 
-import { useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import {
-  User,
-  GraduationCap,
-  Briefcase,
-  Lightbulb,
-  Wrench,
-  FileText,
-} from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
-
+import { Separator } from '@/components/ui/separator';
 import { PersonalInfoStep } from './steps/personal-info-step';
 import { EducationStep } from './steps/education-step';
 import { ExperienceStep } from './steps/experience-step';
@@ -82,18 +70,7 @@ export const resumeSchema = z.object({
   skills: skillsSchema,
 });
 
-const steps = [
-  { id: 1, name: 'Personal Info', icon: User, fields: ['personalInfo'] },
-  { id: 2, name: 'Education', icon: GraduationCap, fields: ['education'] },
-  { id: 3, name: 'Experience', icon: Briefcase, fields: ['experience'] },
-  { id: 4, name: 'Projects', icon: Lightbulb, fields: ['projects'] },
-  { id: 5, name: 'Skills', icon: Wrench, fields: ['skills'] },
-  { id: 6, name: 'Finalize', icon: FileText, fields: [] },
-];
-
 export function ResumeBuilder() {
-  const [currentStep, setCurrentStep] = useState(1);
-
   const methods = useForm<z.infer<typeof resumeSchema>>({
     resolver: zodResolver(resumeSchema),
     defaultValues: {
@@ -116,31 +93,6 @@ export function ResumeBuilder() {
     },
   });
 
-  const nextStep = async () => {
-    const fieldsToValidate = steps[currentStep - 1].fields;
-    const isValid = await methods.trigger(fieldsToValidate as any);
-
-    if (isValid && currentStep < steps.length) {
-      setCurrentStep(currentStep + 1);
-    }
-  };
-
-  const prevStep = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-    }
-  };
-
-  const progress = (currentStep / steps.length) * 100;
-  const CurrentStepComponent = [
-    PersonalInfoStep,
-    EducationStep,
-    ExperienceStep,
-    ProjectsStep,
-    SkillsStep,
-    FinalizeStep,
-  ][currentStep - 1];
-
   return (
     <Card className="w-full max-w-4xl">
       <CardHeader>
@@ -148,42 +100,25 @@ export function ResumeBuilder() {
           College Resume AI
         </CardTitle>
         <CardDescription>
-          Create a professional resume with the power of AI.
+          A simple resume builder to generate a professional LaTeX resume with
+          the help of AI.
         </CardDescription>
-        <div className="pt-4">
-          <Progress value={progress} className="w-full" />
-          <div className="mt-2 flex justify-between text-xs text-muted-foreground">
-            {steps.map((step) => (
-              <div
-                key={step.id}
-                className={`flex flex-col items-center ${
-                  currentStep >= step.id ? 'text-primary' : ''
-                }`}
-              >
-                <step.icon
-                  className={`h-5 w-5 ${
-                    currentStep === step.id ? 'font-bold' : ''
-                  }`}
-                />
-                <span>{step.name}</span>
-              </div>
-            ))}
-          </div>
-        </div>
       </CardHeader>
       <FormProvider {...methods}>
         <form onSubmit={(e) => e.preventDefault()}>
-          <CardContent className="min-h-[300px]">
-            <CurrentStepComponent />
+          <CardContent className="space-y-8">
+            <PersonalInfoStep />
+            <Separator />
+            <EducationStep />
+            <Separator />
+            <ExperienceStep />
+            <Separator />
+            <ProjectsStep />
+            <Separator />
+            <SkillsStep />
+            <Separator />
+            <FinalizeStep />
           </CardContent>
-          <CardFooter className="justify-between">
-            <Button variant="outline" onClick={prevStep} disabled={currentStep === 1}>
-              Back
-            </Button>
-            {currentStep < steps.length && (
-              <Button onClick={nextStep}>Next</Button>
-            )}
-          </CardFooter>
         </form>
       </FormProvider>
     </Card>
