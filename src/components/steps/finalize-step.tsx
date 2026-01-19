@@ -1,8 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useFormContext } from 'react-hook-form';
 import Image from 'next/image';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+
 import {
   Select,
   SelectContent,
@@ -20,17 +23,20 @@ import type { ResumeData } from '@/lib/types';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { useToast } from '@/hooks/use-toast';
 import { resumeSchema } from '../resume-builder';
+import { ModernTemplate } from '../resume-templates/modern-template';
+import { ClassicTemplate } from '../resume-templates/classic-template';
 
 export function FinalizeStep() {
   const { getValues } = useFormContext();
   const [selectedTemplate, setSelectedTemplate] = useState(templates[0].id);
-  const [isGenerating, setIsGenerating] = useState(false);
+  const [isGeneratingTex, setIsGeneratingTex] = useState(false);
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const { toast } = useToast();
+  const resumePreviewRef = useRef<HTMLDivElement>(null);
 
-  const handleDownload = async () => {
-    setIsGenerating(true);
+
+  const validateData = () => {
     const data = getValues();
-    
     const validationResult = resumeSchema.safeParse(data);
 
     if (!validationResult.success) {
@@ -39,69 +45,152 @@ export function FinalizeStep() {
         title: 'Validation Error',
         description: 'Please go back and fill all required fields correctly.',
       });
-      setIsGenerating(false);
-      return;
+      return null;
+    }
+    return validationResult.data as ResumeData;
+  }
+
+  const handleTexDownload = async () => {
+    setIsGeneratingTex(true);
+    const data = validateData();
+    if (!data) {
+        setIsGeneratingTex(false);
+        return;
     }
 
     const template = templates.find((t) => t.id === selectedTemplate);
 
     if (template) {
       const latexCode = generateResume(
-        data as ResumeData,
+        data,
         template.id as 'modern' | 'classic',
         template.template
       );
       downloadFile(latexCode, 'resume.tex', 'application/x-tex');
     }
-    setIsGenerating(false);
+    setIsGeneratingTex(false);
   };
   
+  const handlePdfDownload = async () => {
+    setIsGeneratingPdf(true);
+    const data = validateData();
+    if (!data) {
+        setIsGeneratingPdf(false);
+        return;
+    }
+    
+    const resumeElement = resumePreviewRef.current;
+    if (resumeElement) {
+        try {
+            const canvas = await html2canvas(resumeElement, {
+                scale: 2, // Higher scale for better quality
+                useCORS: true,
+                backgroundColor: '#ffffff',
+            });
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4',
+            });
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            
+            let position = 0;
+            let pageHeight = pdf.internal.pageSize.height;
+            let imgHeight = (canvas.height * pdfWidth) / canvas.width;
+            let heightLeft = imgHeight;
+            
+            pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
+            heightLeft -= pageHeight;
+            
+            while (heightLeft > 0) {
+              position = heightLeft - imgHeight;
+              pdf.addPage();
+              pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
+              heightLeft -= pageHeight;
+            }
+
+            pdf.save('resume.pdf');
+        } catch (error) {
+            console.error(error);
+            toast({
+                variant: 'destructive',
+                title: 'PDF Generation Failed',
+                description: 'An error occurred while generating the PDF.',
+            });
+        }
+    }
+
+    setIsGeneratingPdf(false);
+  }
+
   const currentTemplateImage = PlaceHolderImages.find(img => img.id.includes(selectedTemplate));
+  const resumeData = getValues();
+  
+  const SelectedTemplateComponent = selectedTemplate === 'modern' ? ModernTemplate : ClassicTemplate;
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-headline font-semibold text-primary">
-        Choose Your Template & Download
-      </h2>
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="template-select">Resume Template</Label>
-            <Select value={selectedTemplate} onValueChange={setSelectedTemplate}>
-              <SelectTrigger id="template-select" className="w-full">
-                <SelectValue placeholder="Select a template" />
-              </SelectTrigger>
-              <SelectContent>
-                {templates.map((template) => (
-                  <SelectItem key={template.id} value={template.id}>
-                    {template.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+    <>
+      <div className="space-y-6">
+        <h2 className="text-2xl font-headline font-semibold text-primary">
+          Choose Your Template & Download
+        </h2>
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="template-select">Resume Template</Label>
+              <Select value={selectedTemplate} onValueChange={setSelectedTemplate}>
+                <SelectTrigger id="template-select" className="w-full">
+                  <SelectValue placeholder="Select a template" />
+                </SelectTrigger>
+                <SelectContent>
+                  {templates.map((template) => (
+                    <SelectItem key={template.id} value={template.id}>
+                      {template.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className='flex flex-col space-y-2'>
+                <Button onClick={handlePdfDownload} disabled={isGeneratingPdf || isGeneratingTex} className="w-full">
+                {isGeneratingPdf ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                    <FileDown className="mr-2 h-4 w-4" />
+                )}
+                Download .pdf File
+                </Button>
+                 <Button onClick={handleTexDownload} disabled={isGeneratingTex || isGeneratingPdf} className="w-full" variant="secondary">
+                    {isGeneratingTex ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                    <FileDown className="mr-2 h-4 w-4" />
+                    )}
+                    Download .tex File
+                </Button>
+            </div>
           </div>
-          <Button onClick={handleDownload} disabled={isGenerating} className="w-full">
-            {isGenerating ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <FileDown className="mr-2 h-4 w-4" />
-            )}
-            Download .tex File
-          </Button>
-        </div>
-        <div className="flex items-center justify-center rounded-lg border bg-secondary/50 p-4">
-            {currentTemplateImage && (
-                <Image
-                    src={currentTemplateImage.imageUrl}
-                    alt={currentTemplateImage.description}
-                    width={400}
-                    height={566}
-                    data-ai-hint={currentTemplateImage.imageHint}
-                    className="rounded-md shadow-lg"
-                />
-            )}
+          <div className="flex items-center justify-center rounded-lg border bg-secondary/50 p-4">
+              {currentTemplateImage && (
+                  <Image
+                      src={currentTemplateImage.imageUrl}
+                      alt={currentTemplateImage.description}
+                      width={400}
+                      height={566}
+                      data-ai-hint={currentTemplateImage.imageHint}
+                      className="rounded-md shadow-lg"
+                  />
+              )}
+          </div>
         </div>
       </div>
-    </div>
+      {/* Hidden element for PDF generation */}
+      <div className="absolute -left-[9999px] top-0" >
+          <div ref={resumePreviewRef}>
+            <SelectedTemplateComponent data={resumeData as ResumeData} />
+          </div>
+      </div>
+    </>
   );
 }
