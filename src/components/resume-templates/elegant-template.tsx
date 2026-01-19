@@ -2,7 +2,7 @@ import type { ResumeData } from '@/lib/types';
 import { Mail, Phone, Linkedin, Github, Globe } from 'lucide-react';
 
 export const ElegantTemplate = ({ data }: { data: ResumeData }) => {
-  const { personalInfo, education, experience, projects, skills } = data;
+  const { personalInfo, education, experience, projects, skills, publications, honors, volunteerExperience } = data;
 
   const getUrlDomain = (url: string) => {
     try {
@@ -88,13 +88,59 @@ export const ElegantTemplate = ({ data }: { data: ResumeData }) => {
       )}
 
       { (skills.languages || skills.frameworks || skills.tools) && (
-        <div>
+        <div className="mb-4">
           <h2 className="text-lg font-semibold uppercase border-b border-slate-400 pb-1 mb-2 text-slate-800">Skills</h2>
           <div className="text-sm font-light space-y-1">
             {skills.languages && <p><span className="font-semibold">Languages: </span>{skills.languages}</p>}
             {skills.frameworks && <p><span className="font-semibold">Frameworks & Libraries: </span>{skills.frameworks}</p>}
             {skills.tools && <p><span className="font-semibold">Tools & Technologies: </span>{skills.tools}</p>}
           </div>
+        </div>
+      )}
+
+      {publications.length > 0 && (
+        <div className="mb-4">
+          <h2 className="text-lg font-semibold uppercase border-b border-slate-400 pb-1 mb-2 text-slate-800">Publications</h2>
+          {publications.map((pub) => (
+            <div key={pub.id} className="mb-3 text-sm">
+              <p className="font-bold">{pub.title}</p>
+              <p className="italic text-xs mb-1">{pub.publisher} - {pub.date}</p>
+              <p className="font-light">{pub.description}</p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {honors.length > 0 && (
+        <div className="mb-4">
+          <h2 className="text-lg font-semibold uppercase border-b border-slate-400 pb-1 mb-2 text-slate-800">Honors & Awards</h2>
+          <ul className="list-disc list-inside font-light space-y-1 pl-2">
+            {honors.map((honor) => (
+              <li key={honor.id}>
+                {honor.title} ({honor.issuer}, {honor.date})
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {volunteerExperience.length > 0 && (
+        <div className="mb-4">
+          <h2 className="text-lg font-semibold uppercase border-b border-slate-400 pb-1 mb-2 text-slate-800">Volunteer Experience</h2>
+          {volunteerExperience.map((vol) => (
+            <div key={vol.id} className="mb-3 text-sm">
+                <div className="flex justify-between">
+                    <span className="font-bold">{vol.role}</span>
+                    <span className="font-light">{vol.startDate} - {vol.endDate}</span>
+                </div>
+                <div className="flex justify-between mb-1">
+                    <span className='italic'>{vol.organization}</span>
+                </div>
+                <ul className="list-disc list-inside font-light space-y-1 pl-2">
+                    {vol.description.split('\n').map((line, i) => line.trim() && <li key={i}>{line.trim().replace(/^•\s*/, '')}</li>)}
+                </ul>
+            </div>
+          ))}
         </div>
       )}
     </div>

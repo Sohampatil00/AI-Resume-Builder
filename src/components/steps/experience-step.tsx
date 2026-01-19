@@ -12,13 +12,13 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { PlusCircle, Trash2, Sparkles } from 'lucide-react';
+import { PlusCircle, Trash2, Sparkles, Info } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { AIDescriptionGenerator } from '../ai-description-generator';
 
 export function ExperienceStep() {
   const { control, setValue, getValues } = useFormContext();
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, replace } = useFieldArray({
     control,
     name: 'experience',
   });
@@ -38,6 +38,27 @@ export function ExperienceStep() {
     }
   };
 
+  const fillDummyData = () => {
+    replace([
+      {
+        id: crypto.randomUUID(),
+        company: 'Google Summer of Code - Submitty',
+        title: 'Student Developer (Full-time)',
+        startDate: 'May 2019',
+        endDate: 'Sep 2019',
+        description: '• Discussion Forum Upgrades: Refactor forum for performance to handle large databases.\n• REST API for Discussion Forum: Symphony & Twig based Forum parts converted to API-first interface.\n• Ratchet PHP WebSocket: Implemented a WebSocket for low-latency real time exchange of posts and thread updates.',
+      },
+      {
+        id: crypto.randomUUID(),
+        company: 'DataCamp Inc.',
+        title: 'Instructor (Part-time, Contractual)',
+        startDate: 'Dec 2018',
+        endDate: 'Present',
+        description: '• Project Course - Find Movie Similarity from Plot Summaries: Created project based course using Unsupervised learning and natural language processing.\n• Tutorial - Introduction to Reinforcement Learning: Created tutorial for Q-learning RL algorithm and concepts.\n• Impact: Course has been taken by 250+ students so far with 4.65 average rating.',
+      },
+    ]);
+  };
+
   return (
     <>
       <div className="space-y-6">
@@ -45,24 +66,35 @@ export function ExperienceStep() {
           <h2 className="text-2xl font-headline font-semibold text-primary">
             Work Experience
           </h2>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={() =>
-              append({
-                id: crypto.randomUUID(),
-                company: '',
-                title: '',
-                startDate: '',
-                endDate: '',
-                description: '',
-              })
-            }
-          >
-            <PlusCircle className="mr-2 h-4 w-4" />
-            Add Experience
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={fillDummyData}
+            >
+              <Info className="mr-2 h-4 w-4" />
+              Fill with Dummy Data
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() =>
+                append({
+                  id: crypto.randomUUID(),
+                  company: '',
+                  title: '',
+                  startDate: '',
+                  endDate: '',
+                  description: '',
+                })
+              }
+            >
+              <PlusCircle className="mr-2 h-4 w-4" />
+              Add Experience
+            </Button>
+          </div>
         </div>
 
         <div className="space-y-8">

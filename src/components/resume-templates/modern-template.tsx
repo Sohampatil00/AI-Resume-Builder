@@ -1,7 +1,7 @@
 import type { ResumeData } from '@/lib/types';
 
 export const ModernTemplate = ({ data }: { data: ResumeData }) => {
-  const { personalInfo, education, experience, projects, skills } = data;
+  const { personalInfo, education, experience, projects, skills, publications, honors, volunteerExperience } = data;
 
   return (
     <div data-html2canvas-target className="bg-white text-black p-8 font-sans text-sm" style={{ width: '210mm', minHeight: '297mm' }}>
@@ -88,13 +88,61 @@ export const ModernTemplate = ({ data }: { data: ResumeData }) => {
       )}
 
       { (skills.languages || skills.frameworks || skills.tools) && (
-        <div>
+        <div className="mb-4">
           <h2 className="text-lg font-bold uppercase border-b-2 border-black pb-1 mb-2">Skills</h2>
           <div className="text-xs">
             {skills.languages && <p><span className="font-bold">Languages: </span>{skills.languages}</p>}
             {skills.frameworks && <p><span className="font-bold">Frameworks: </span>{skills.frameworks}</p>}
             {skills.tools && <p><span className="font-bold">Tools: </span>{skills.tools}</p>}
           </div>
+        </div>
+      )}
+
+      {publications.length > 0 && (
+        <div className="mb-4">
+          <h2 className="text-lg font-bold uppercase border-b-2 border-black pb-1 mb-2">Publications</h2>
+          {publications.map((pub) => (
+            <div key={pub.id} className="mb-2">
+              <div className="flex justify-between">
+                <p className="font-bold">{pub.title}</p>
+                <p className="text-xs">{pub.publisher}, {pub.date}</p>
+              </div>
+              <p className="text-xs">{pub.description}</p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {honors.length > 0 && (
+        <div className="mb-4">
+          <h2 className="text-lg font-bold uppercase border-b-2 border-black pb-1 mb-2">Honors & Awards</h2>
+          <ul className="list-disc list-inside text-xs">
+            {honors.map((honor) => (
+              <li key={honor.id}>
+                {honor.title} ({honor.issuer}, {honor.date})
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {volunteerExperience.length > 0 && (
+        <div className="mb-4">
+          <h2 className="text-lg font-bold uppercase border-b-2 border-black pb-1 mb-2">Volunteer Experience</h2>
+          {volunteerExperience.map((vol) => (
+            <div key={vol.id} className="mb-2">
+                <div className="flex justify-between">
+                    <span className="font-bold">{vol.role}</span>
+                    <span className="text-xs">{vol.startDate} - {vol.endDate}</span>
+                </div>
+                <div className="flex justify-between text-xs mb-1">
+                    <span>{vol.organization}</span>
+                </div>
+                <ul className="list-disc list-inside text-xs">
+                    {vol.description.split('\n').map((line, i) => line.trim() && <li key={i}>{line.trim().replace(/•/g, '')}</li>)}
+                </ul>
+            </div>
+          ))}
         </div>
       )}
     </div>

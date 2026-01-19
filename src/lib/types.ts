@@ -41,10 +41,38 @@ export type Skills = {
   tools: string;
 };
 
+export type Publication = {
+  id: string;
+  title: string;
+  publisher: string;
+  date: string;
+  description: string;
+};
+
+export type Honor = {
+  id: string;
+  title: string;
+  issuer: string;
+  date: string;
+};
+
+export type VolunteerExperience = {
+  id: string;
+  organization: string;
+  role: string;
+  startDate: string;
+  endDate: string;
+  description: string;
+};
+
+
 export type ResumeData = {
   personalInfo: PersonalInfo;
   education: Education[];
   experience: Experience[];
   projects: Project[];
   skills: Skills;
+  publications: Publication[];
+  honors: Honor[];
+  volunteerExperience: VolunteerExperience[];
 };

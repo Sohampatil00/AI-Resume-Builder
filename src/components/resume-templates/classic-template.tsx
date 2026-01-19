@@ -1,7 +1,7 @@
 import type { ResumeData } from '@/lib/types';
 
 export const ClassicTemplate = ({ data }: { data: ResumeData }) => {
-  const { personalInfo, education, experience, projects, skills } = data;
+  const { personalInfo, education, experience, projects, skills, publications, honors, volunteerExperience } = data;
 
   const getUsername = (url: string | undefined) => {
     if (!url) return '';
@@ -89,6 +89,57 @@ export const ClassicTemplate = ({ data }: { data: ResumeData }) => {
             {projects.map(proj => (
               <li key={proj.id} className="mb-1">
                 <span className="font-bold">{proj.name}{proj.technologies && ` (${proj.technologies})`}:</span> {proj.description}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Publications */}
+      {publications.length > 0 && (
+        <div className="mb-2">
+          <h2 className="text-lg font-normal tracking-wide uppercase border-b border-black pb-1 mb-2">Publications</h2>
+          <ul className='list-disc pl-8 text-sm'>
+            {publications.map(pub => (
+              <li key={pub.id} className="mb-1">
+                <span className="font-bold">{pub.title}</span> ({pub.publisher}, {pub.date}): {pub.description}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Honors & Awards */}
+      {honors.length > 0 && (
+        <div className="mb-2">
+          <h2 className="text-lg font-normal tracking-wide uppercase border-b border-black pb-1 mb-2">Honors & Awards</h2>
+          <ul className='list-disc pl-8 text-sm'>
+            {honors.map(honor => (
+              <li key={honor.id} className="mb-1">
+                {honor.title} ({honor.issuer}, {honor.date})
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Volunteer Experience */}
+      {volunteerExperience.length > 0 && (
+        <div className="mb-2">
+          <h2 className="text-lg font-normal tracking-wide uppercase border-b border-black pb-1 mb-2">Volunteer Experience</h2>
+          <ul className='list-none pl-4'>
+            {volunteerExperience.map(vol => (
+              <li key={vol.id} className="mb-2 text-sm">
+                <div className="grid grid-cols-2">
+                    <div className='font-bold'>{vol.organization}</div>
+                    <div className='text-right'>{vol.startDate} - {vol.endDate}</div>
+                </div>
+                <div className="grid grid-cols-2">
+                    <div className='italic'>{vol.role}</div>
+                </div>
+                <ul className="list-disc list-inside mt-1">
+                  {vol.description.split('\n').map((line, i) => line.trim() && <li key={i}>{line.trim().replace(/•/g, '')}</li>)}
+                </ul>
               </li>
             ))}
           </ul>

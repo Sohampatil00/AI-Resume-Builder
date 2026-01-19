@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { PlusCircle, Trash2 } from 'lucide-react';
+import { PlusCircle, Trash2, Info } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 
 const months = [
@@ -42,10 +42,26 @@ const years = Array.from({ length: currentYear - 1980 + 5 }, (_, i) =>
 
 export function EducationStep() {
   const { control } = useFormContext();
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, replace } = useFieldArray({
     control,
     name: 'education',
   });
+  
+  const fillDummyData = () => {
+    replace([
+      {
+        id: crypto.randomUUID(),
+        school: 'Netaji Subhash Engineering College',
+        degree: 'Bachelor of Technology',
+        major: 'Information Technology',
+        cgpa: '7.27/10',
+        startMonth: 'Jul',
+        startYear: '2016',
+        endMonth: 'Jun',
+        endYear: '2020',
+      }
+    ]);
+  }
 
   return (
     <div className="space-y-6">
@@ -53,27 +69,38 @@ export function EducationStep() {
         <h2 className="text-2xl font-headline font-semibold text-primary">
           Education
         </h2>
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          onClick={() =>
-            append({
-              id: crypto.randomUUID(),
-              school: '',
-              degree: '',
-              major: '',
-              cgpa: '',
-              startMonth: '',
-              startYear: '',
-              endMonth: '',
-              endYear: '',
-            })
-          }
-        >
-          <PlusCircle className="mr-2 h-4 w-4" />
-          Add Education
-        </Button>
+        <div className="flex items-center gap-2">
+           <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={fillDummyData}
+          >
+            <Info className="mr-2 h-4 w-4" />
+            Fill with Dummy Data
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() =>
+              append({
+                id: crypto.randomUUID(),
+                school: '',
+                degree: '',
+                major: '',
+                cgpa: '',
+                startMonth: '',
+                startYear: '',
+                endMonth: '',
+                endYear: '',
+              })
+            }
+          >
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Add Education
+          </Button>
+        </div>
       </div>
 
       <div className="space-y-8">

@@ -82,6 +82,12 @@ export const templates = [
 
 %%PROJECTS_SECTION%%
 
+%%PUBLICATIONS_SECTION%%
+
+%%HONORS_AWARDS_SECTION%%
+
+%%VOLUNTEER_EXPERIENCE_SECTION%%
+
 \\end{document}
 `,
   },
@@ -179,6 +185,12 @@ export const templates = [
 
 %%SKILLS_SECTION%%
 
+%%PUBLICATIONS_SECTION%%
+
+%%HONORS_AWARDS_SECTION%%
+
+%%VOLUNTEER_EXPERIENCE_SECTION%%
+
 \\end{document}
 `,
   },
@@ -241,6 +253,12 @@ export const templates = [
 %%PROJECTS_SECTION%%
 
 %%SKILLS_SECTION%%
+
+%%PUBLICATIONS_SECTION%%
+
+%%HONORS_AWARDS_SECTION%%
+
+%%VOLUNTEER_EXPERIENCE_SECTION%%
 
 \\end{document}
 `,

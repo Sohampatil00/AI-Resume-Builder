@@ -18,6 +18,9 @@ import { ExperienceStep } from './steps/experience-step';
 import { ProjectsStep } from './steps/projects-step';
 import { SkillsStep } from './steps/skills-step';
 import { FinalizeStep } from './steps/finalize-step';
+import { PublicationsStep } from './steps/publications-step';
+import { HonorsAwardsStep } from './steps/honors-awards-step';
+import { VolunteerExperienceStep } from './steps/volunteer-experience-step';
 
 const personalInfoSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -62,12 +65,39 @@ const skillsSchema = z.object({
   tools: z.string().optional(),
 });
 
+const publicationSchema = z.object({
+  id: z.string(),
+  title: z.string().min(1, 'Title is required'),
+  publisher: z.string().optional(),
+  date: z.string().optional(),
+  description: z.string().optional(),
+});
+
+const honorSchema = z.object({
+  id: z.string(),
+  title: z.string().min(1, 'Title is required'),
+  issuer: z.string().optional(),
+  date: z.string().optional(),
+});
+
+const volunteerExperienceSchema = z.object({
+  id: z.string(),
+  organization: z.string().min(1, 'Organization is required'),
+  role: z.string().min(1, 'Role is required'),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
+  description: z.string().optional(),
+});
+
 export const resumeSchema = z.object({
   personalInfo: personalInfoSchema,
   education: z.array(educationSchema),
   experience: z.array(experienceSchema),
   projects: z.array(projectSchema),
   skills: skillsSchema,
+  publications: z.array(publicationSchema),
+  honors: z.array(honorSchema),
+  volunteerExperience: z.array(volunteerExperienceSchema),
 });
 
 export function ResumeBuilder() {
@@ -90,6 +120,9 @@ export function ResumeBuilder() {
         frameworks: '',
         tools: '',
       },
+      publications: [],
+      honors: [],
+      volunteerExperience: [],
     },
   });
 
@@ -116,6 +149,12 @@ export function ResumeBuilder() {
             <ProjectsStep />
             <Separator />
             <SkillsStep />
+            <Separator />
+            <PublicationsStep />
+            <Separator />
+            <HonorsAwardsStep />
+            <Separator />
+            <VolunteerExperienceStep />
             <Separator />
             <FinalizeStep />
           </CardContent>

@@ -9,15 +9,37 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Info } from 'lucide-react';
 
 export function PersonalInfoStep() {
-  const { control } = useFormContext();
+  const { control, setValue } = useFormContext();
+
+  const fillDummyData = () => {
+    setValue('personalInfo.name', 'Ramesh Patel');
+    setValue('personalInfo.email', 'ramesh.patel@example.com');
+    setValue('personalInfo.phone', '+91 12345 67890');
+    setValue('personalInfo.linkedin', 'https://linkedin.com/in/rameshpatel');
+    setValue('personalInfo.github', 'https://github.com/rameshpatel');
+    setValue('personalInfo.website', 'https://rameshpatel.com');
+  };
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-headline font-semibold text-primary">
-        Personal Information
-      </h2>
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-headline font-semibold text-primary">
+          Personal Information
+        </h2>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={fillDummyData}
+        >
+          <Info className="mr-2 h-4 w-4" />
+          Fill with Dummy Data
+        </Button>
+      </div>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <FormField
           control={control}
