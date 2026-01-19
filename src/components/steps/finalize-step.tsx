@@ -104,10 +104,10 @@ export function FinalizeStep() {
 
     try {
       // Give browser time to render fonts
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       const canvas = await html2canvas(elementToRender, {
-        scale: 3, // Increased scale for much higher resolution
+        scale: 4, // Increased scale for much higher resolution
         useCORS: true,
         logging: false,
         backgroundColor: '#ffffff',
