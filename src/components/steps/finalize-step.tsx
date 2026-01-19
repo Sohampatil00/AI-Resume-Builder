@@ -88,7 +88,7 @@ export function FinalizeStep() {
         }
 
         const canvas = await html2canvas(previewElement, {
-            scale: 3,
+            scale: 4,
             useCORS: true,
         });
         
