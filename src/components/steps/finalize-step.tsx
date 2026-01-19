@@ -79,7 +79,7 @@ export function FinalizeStep() {
     setIsGeneratingPdf(true);
     try {
         const previewElement = resumePreviewRef.current.querySelector(
-            '[style*="width: 210mm"]'
+            '[data-html2canvas-target]'
         ) as HTMLElement;
 
         if (!previewElement) {

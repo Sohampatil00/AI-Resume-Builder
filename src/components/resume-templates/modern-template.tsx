@@ -4,7 +4,7 @@ export const ModernTemplate = ({ data }: { data: ResumeData }) => {
   const { personalInfo, education, experience, projects, skills } = data;
 
   return (
-    <div className="bg-white text-black p-8 font-sans text-sm" style={{ width: '210mm', minHeight: '297mm' }}>
+    <div data-html2canvas-target className="bg-white text-black p-8 font-sans text-sm" style={{ width: '210mm', minHeight: '297mm' }}>
       <div className="text-center mb-4">
         <h1 className="text-4xl font-bold tracking-wider uppercase">{personalInfo.name}</h1>
         <div className="flex justify-center items-center space-x-2 text-xs mt-2">

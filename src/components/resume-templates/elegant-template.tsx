@@ -22,7 +22,7 @@ export const ElegantTemplate = ({ data }: { data: ResumeData }) => {
 
 
   return (
-    <div className="bg-white text-gray-800 p-8 font-serif text-sm" style={{ width: '210mm', minHeight: '297mm' }}>
+    <div data-html2canvas-target className="bg-white text-gray-800 p-8 font-serif text-sm" style={{ width: '210mm', minHeight: '297mm' }}>
       <div className="text-center mb-6">
         <h1 className="text-3xl font-bold uppercase text-slate-800 tracking-wider">{personalInfo.name}</h1>
         <div className="flex justify-center items-center flex-wrap space-x-3 text-xs mt-2 text-slate-600">
