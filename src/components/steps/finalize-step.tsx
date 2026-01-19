@@ -22,7 +22,7 @@ import type { ResumeData } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { resumeSchema } from '../resume-builder';
 import { ModernTemplate } from '../resume-templates/modern-template';
-import { ClassicTemplate } from '../resume-templates/classic-template';
+import { ElegantTemplate } from '../resume-templates/elegant-template';
 
 export function FinalizeStep() {
   const { getValues } = useFormContext();
@@ -61,7 +61,7 @@ export function FinalizeStep() {
     if (template) {
       const latexCode = generateResume(
         data,
-        template.id as 'modern' | 'classic',
+        template.id as 'modern' | 'elegant',
         template.template
       );
       downloadFile(latexCode, 'resume.tex', 'application/x-tex');
@@ -117,7 +117,7 @@ export function FinalizeStep() {
 
   const resumeData = getValues();
   
-  const SelectedTemplateComponent = selectedTemplate === 'modern' ? ModernTemplate : ClassicTemplate;
+  const SelectedTemplateComponent = selectedTemplate === 'modern' ? ModernTemplate : ElegantTemplate;
 
   return (
     <>

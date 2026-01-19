@@ -12,8 +12,7 @@ const escapeLatex = (str: string | undefined): string => {
     .replace(/{/g, '\\{')
     .replace(/}/g, '\\}')
     .replace(/~/g, '\\textasciitilde{}')
-    .replace(/\^/g, '\\textasciicircum{}')
-    .replace(/\n/g, '\\\\ ');
+    .replace(/\^/g, '\\textasciicircum{}');
 };
 
 const generateModernTemplate = (data: ResumeData, template: string): string => {
@@ -51,7 +50,7 @@ const generateModernTemplate = (data: ResumeData, template: string): string => {
     const experienceItems = data.experience
       .map(
         (exp) =>
-          `\\resumeSubheading{${escapeLatex(exp.title)}}{${escapeLatex(exp.startDate)} - ${escapeLatex(exp.endDate)}}{${escapeLatex(exp.company)}}{}\n\\resumeItemListStart\n\\resumeItem{${escapeLatex(exp.description)}}\n\\resumeItemListEnd`
+          `\\resumeSubheading{${escapeLatex(exp.title)}}{${escapeLatex(exp.startDate)} - ${escapeLatex(exp.endDate)}}{${escapeLatex(exp.company)}}{}\n\\resumeItemListStart\n\\resumeItem{${escapeLatex(exp.description).replace(/\n/g, ' \\\\ ')}}\n\\resumeItemListEnd`
       )
       .join('\n');
     generated = generated.replace('%%EXPERIENCE_SECTION%%', `\\section{Experience}\\resumeSubHeadingListStart\n${experienceItems}\n\\resumeSubHeadingListEnd`);
@@ -64,7 +63,7 @@ const generateModernTemplate = (data: ResumeData, template: string): string => {
     const projectItems = data.projects
       .map(
         (proj) =>
-          `\\resumeProjectHeading{${escapeLatex(proj.name)}}{${escapeLatex(proj.technologies)}}\n\\resumeItemListStart\n\\resumeItem{${escapeLatex(proj.description)}}\n\\resumeItemListEnd`
+          `\\resumeProjectHeading{${escapeLatex(proj.name)}}{${escapeLatex(proj.technologies)}}\n\\resumeItemListStart\n\\resumeItem{${escapeLatex(proj.description).replace(/\n/g, ' \\\\ ')}}\n\\resumeItemListEnd`
       )
       .join('\n');
     generated = generated.replace('%%PROJECTS_SECTION%%', `\\section{Projects}\\resumeSubHeadingListStart\n${projectItems}\n\\resumeSubHeadingListEnd`);
@@ -87,64 +86,92 @@ const generateModernTemplate = (data: ResumeData, template: string): string => {
   return generated;
 }
 
-const generateClassicTemplate = (data: ResumeData, template: string): string => {
-    let generated = template;
+const generateElegantTemplate = (data: ResumeData, template: string): string => {
+  let generated = template;
 
-    generated = generated.replace('%%NAME%%', escapeLatex(data.personalInfo.name));
-    generated = generated.replace('%%EMAIL%%', escapeLatex(data.personalInfo.email));
-    generated = generated.replace('%%PHONE%%', escapeLatex(data.personalInfo.phone));
-    generated = generated.replace(/%%LINKEDIN%%/g, escapeLatex(data.personalInfo.linkedin));
-    generated = generated.replace(/%%GITHUB%%/g, escapeLatex(data.personalInfo.github));
+  generated = generated.replace('%%NAME%%', escapeLatex(data.personalInfo.name));
+  generated = generated.replace('%%EMAIL%%', escapeLatex(data.personalInfo.email));
+  generated = generated.replace('%%PHONE%%', escapeLatex(data.personalInfo.phone));
+  generated = generated.replace(/%%LINKEDIN%%/g, escapeLatex(data.personalInfo.linkedin));
+  generated = generated.replace(/%%GITHUB%%/g, escapeLatex(data.personalInfo.github));
+  
+  if (data.personalInfo.website) {
+    const websiteUrl = escapeLatex(data.personalInfo.website);
+    generated = generated.replace('%%WEBSITE_SECTION%%', `\\quad \\faGlobe \\ \\href{${websiteUrl}}{${websiteUrl.replace(/https?:\/\//, '')}}`);
+  } else {
+    generated = generated.replace('%%WEBSITE_SECTION%%', '');
+  }
 
-    if (data.personalInfo.website) {
-        generated = generated.replace('%%WEBSITE_SECTION%%', `$|$ \\href{${escapeLatex(data.personalInfo.website)}}{${escapeLatex(data.personalInfo.website)}}`);
-    } else {
-        generated = generated.replace('%%WEBSITE_SECTION%%', '');
-    }
+  // Education
+  if (data.education.length > 0) {
+    const educationItems = data.education
+      .map(
+        (edu) => {
+          const endDate = edu.endMonth === 'Present' ? 'Present' : `${escapeLatex(edu.endMonth)} ${escapeLatex(edu.endYear)}`;
+          const startDate = `${escapeLatex(edu.startMonth)} ${escapeLatex(edu.startYear)}`;
+          return `\\resumeentry{${escapeLatex(edu.school)}}{${startDate} - ${endDate}}{${escapeLatex(edu.degree)} in ${escapeLatex(edu.major)}}{CGPA: ${escapeLatex(edu.cgpa)}}`
+        })
+      .join('\n');
+    generated = generated.replace('%%EDUCATION_SECTION%%', `\\section{Education}\n${educationItems}`);
+  } else {
+    generated = generated.replace('%%EDUCATION_SECTION%%', '');
+  }
 
-    const educationItems = data.education.map(edu => {
-        const endDate = edu.endMonth === 'Present' ? 'Present' : `${escapeLatex(edu.endMonth)} ${escapeLatex(edu.endYear)}`;
-        const startDate = `${escapeLatex(edu.startMonth)} ${escapeLatex(edu.startYear)}`;
-        return `\\item \\textbf{${escapeLatex(edu.school)}} \\hfill ${startDate} - ${endDate} \\\\ ${escapeLatex(edu.degree)} in ${escapeLatex(edu.major)} \\hfill CGPA: ${escapeLatex(edu.cgpa)}`
-    }).join('\n');
-    generated = generated.replace('%%EDUCATION_ITEMS%%', educationItems);
+  // Experience
+  if (data.experience.length > 0) {
+    const experienceItems = data.experience
+      .map(
+        (exp) => {
+          const descriptionItems = exp.description.split('\n').map(line => `\\resumeitem{${escapeLatex(line.trim().replace(/^•\s*/, ''))}}`).join('\n');
+          return `\\resumeentry{${escapeLatex(exp.title)}}{${escapeLatex(exp.startDate)} - ${escapeLatex(exp.endDate)}}{${escapeLatex(exp.company)}}{}\n\\resumeliststart\n${descriptionItems}\n\\resumelistend`
+        })
+      .join('\n\\vspace{5pt}\n');
+    generated = generated.replace('%%EXPERIENCE_SECTION%%', `\\section{Experience}\n${experienceItems}`);
+  } else {
+    generated = generated.replace('%%EXPERIENCE_SECTION%%', '');
+  }
 
-    const experienceItems = data.experience.map(exp => 
-        `\\item \\textbf{${escapeLatex(exp.title)}}, \\textit{${escapeLatex(exp.company)}} \\hfill ${escapeLatex(exp.startDate)} - ${escapeLatex(exp.endDate)}
-        \\begin{itemize}[label=\\textbullet, leftmargin=*]
-        \\item ${escapeLatex(exp.description)}
-        \\end{itemize}`
-    ).join('\n');
-    generated = generated.replace('%%EXPERIENCE_ITEMS%%', experienceItems);
+  // Projects
+  if (data.projects.length > 0) {
+    const projectItems = data.projects
+      .map(
+        (proj) => {
+          const technologies = proj.technologies ? `Technologies: ${escapeLatex(proj.technologies)}` : '';
+          const descriptionItems = proj.description.split('\n').map(line => `\\resumeitem{${escapeLatex(line.trim().replace(/^•\s*/, ''))}}`).join('\n');
+          return `\\resumeentry{${escapeLatex(proj.name)}}{}{${technologies}}{}\n\\resumeliststart\n${descriptionItems}\n\\resumelistend`
+        })
+      .join('\n\\vspace{5pt}\n');
+    generated = generated.replace('%%PROJECTS_SECTION%%', `\\section{Projects}\n${projectItems}`);
+  } else {
+    generated = generated.replace('%%PROJECTS_SECTION%%', '');
+  }
 
-    const projectItems = data.projects.map(proj =>
-        `\\item \\textbf{${escapeLatex(proj.name)}} \\\\ \\textit{Technologies: ${escapeLatex(proj.technologies)}}
-        \\begin{itemize}[label=\\textbullet, leftmargin=*]
-        \item ${escapeLatex(proj.description)}
-        \\end{itemize}`
-    ).join('\n');
-    generated = generated.replace('%%PROJECT_ITEMS%%', projectItems);
+  // Skills
+  if (data.skills.languages || data.skills.frameworks || data.skills.tools) {
+    let skillsContent = '\\section{Skills}\n\\resumeliststart\n';
+    if(data.skills.languages) skillsContent += `\\resumeitem{\\textbf{Languages:} ${escapeLatex(data.skills.languages)}}\n`;
+    if(data.skills.frameworks) skillsContent += `\\resumeitem{\\textbf{Frameworks \\& Libraries:} ${escapeLatex(data.skills.frameworks)}}\n`;
+    if(data.skills.tools) skillsContent += `\\resumeitem{\\textbf{Tools \\& Technologies:} ${escapeLatex(data.skills.tools)}}\n`;
+    skillsContent += '\\resumelistend';
+    generated = generated.replace('%%SKILLS_SECTION%%', skillsContent);
+  } else {
+    generated = generated.replace('%%SKILLS_SECTION%%', '');
+  }
 
-    let skillsItems = '';
-    if(data.skills.languages) skillsItems += `\\item \\textbf{Languages:} ${escapeLatex(data.skills.languages)}\n`;
-    if(data.skills.frameworks) skillsItems += `\\item \\textbf{Frameworks:} ${escapeLatex(data.skills.frameworks)}\n`;
-    if(data.skills.tools) skillsItems += `\\item \\textbf{Tools:} ${escapeLatex(data.skills.tools)}\n`;
-    generated = generated.replace('%%SKILLS_ITEMS%%', skillsItems);
-
-    return generated;
+  return generated;
 };
 
 
 export const generateResume = (
   data: ResumeData,
-  templateId: 'modern' | 'classic',
+  templateId: 'modern' | 'elegant',
   template: string
 ) => {
   if (templateId === 'modern') {
     return generateModernTemplate(data, template);
   }
-  if (templateId === 'classic') {
-    return generateClassicTemplate(data, template);
+  if (templateId === 'elegant') {
+    return generateElegantTemplate(data, template);
   }
   return 'Template not found';
 };
