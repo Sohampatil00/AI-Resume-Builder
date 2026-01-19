@@ -2,6 +2,8 @@
 
 import { useState, useRef } from 'react';
 import { useFormContext } from 'react-hook-form';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 import {
   Select,
@@ -26,6 +28,7 @@ export function FinalizeStep() {
   const { getValues } = useFormContext();
   const [selectedTemplate, setSelectedTemplate] = useState(templates[0].id);
   const [isGeneratingTex, setIsGeneratingTex] = useState(false);
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const { toast } = useToast();
   const resumePreviewRef = useRef<HTMLDivElement>(null);
 
@@ -66,6 +69,52 @@ export function FinalizeStep() {
     setIsGeneratingTex(false);
   };
   
+  const handlePdfDownload = async () => {
+    const data = validateData();
+    if (!data || !resumePreviewRef.current) {
+        return;
+    }
+
+    setIsGeneratingPdf(true);
+    try {
+        const previewElement = resumePreviewRef.current.querySelector(
+            '[style*="width: 210mm"]'
+        ) as HTMLElement;
+
+        if (!previewElement) {
+            throw new Error("Could not find preview element to render.");
+        }
+
+        const canvas = await html2canvas(previewElement, {
+            scale: 2,
+            useCORS: true,
+        });
+        
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: 'a4',
+        });
+        
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+        
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        pdf.save('resume.pdf');
+
+    } catch (error) {
+        console.error("PDF generation error:", error);
+        toast({
+            variant: 'destructive',
+            title: 'PDF Generation Failed',
+            description: 'An error occurred while generating the PDF.',
+        });
+    } finally {
+        setIsGeneratingPdf(false);
+    }
+  };
+
   const resumeData = getValues();
   
   const SelectedTemplateComponent = selectedTemplate === 'modern' ? ModernTemplate : ClassicTemplate;
@@ -94,6 +143,14 @@ export function FinalizeStep() {
               </Select>
             </div>
             <div className='flex flex-col space-y-2'>
+                 <Button onClick={handlePdfDownload} disabled={isGeneratingPdf} className="w-full">
+                    {isGeneratingPdf ? (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                        <FileDown className="mr-2 h-4 w-4" />
+                    )}
+                    Download .pdf File
+                 </Button>
                  <Button onClick={handleTexDownload} disabled={isGeneratingTex} className="w-full">
                     {isGeneratingTex ? (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
