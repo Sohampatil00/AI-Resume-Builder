@@ -10,8 +10,35 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { PlusCircle, Trash2 } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
+
+const months = [
+  { value: 'Jan', label: 'January' },
+  { value: 'Feb', label: 'February' },
+  { value: 'Mar', label: 'March' },
+  { value: 'Apr', label: 'April' },
+  { value: 'May', label: 'May' },
+  { value: 'Jun', label: 'June' },
+  { value: 'Jul', label: 'July' },
+  { value: 'Aug', label: 'August' },
+  { value: 'Sep', label: 'September' },
+  { value: 'Oct', label: 'October' },
+  { value: 'Nov', label: 'November' },
+  { value: 'Dec', label: 'December' },
+];
+
+const currentYear = new Date().getFullYear();
+const years = Array.from({ length: currentYear - 1980 + 5 }, (_, i) =>
+  (currentYear + 4 - i).toString()
+);
 
 export function EducationStep() {
   const { control } = useFormContext();
@@ -36,9 +63,11 @@ export function EducationStep() {
               school: '',
               degree: '',
               major: '',
-              gpa: '',
-              startDate: '',
-              endDate: '',
+              cgpa: '',
+              startMonth: '',
+              startYear: '',
+              endMonth: '',
+              endYear: '',
             })
           }
         >
@@ -107,43 +136,120 @@ export function EducationStep() {
               />
               <FormField
                 control={control}
-                name={`education.${index}.gpa`}
+                name={`education.${index}.cgpa`}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>GPA</FormLabel>
+                    <FormLabel>CGPA</FormLabel>
                     <FormControl>
-                      <Input placeholder="3.8/4.0" {...field} />
+                      <Input placeholder="8.5/10" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <FormField
-                control={control}
-                name={`education.${index}.startDate`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Start Date</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g., Aug 2020" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={control}
-                name={`education.${index}.endDate`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>End Date</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g., May 2024" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="space-y-2">
+                <FormLabel>Start Date</FormLabel>
+                <div className="flex gap-2">
+                  <FormField
+                    control={control}
+                    name={`education.${index}.startMonth`}
+                    render={({ field }) => (
+                      <FormItem className="flex-1">
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Month" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {months.map((month) => (
+                              <SelectItem key={month.value} value={month.value}>
+                                {month.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={control}
+                    name={`education.${index}.startYear`}
+                    render={({ field }) => (
+                      <FormItem className="flex-1">
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Year" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {years.map((year) => (
+                              <SelectItem key={year} value={year}>
+                                {year}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <FormLabel>End Date</FormLabel>
+                <div className="flex gap-2">
+                   <FormField
+                    control={control}
+                    name={`education.${index}.endMonth`}
+                    render={({ field }) => (
+                      <FormItem className="flex-1">
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Month" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                             <SelectItem value="Present">Present</SelectItem>
+                            {months.map((month) => (
+                              <SelectItem key={month.value} value={month.value}>
+                                {month.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={control}
+                    name={`education.${index}.endYear`}
+                    render={({ field }) => (
+                      <FormItem className="flex-1">
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Year" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {years.map((year) => (
+                              <SelectItem key={year} value={year}>
+                                {year}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
             </div>
           </div>
         ))}

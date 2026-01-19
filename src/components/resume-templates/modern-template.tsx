@@ -39,11 +39,11 @@ export const ModernTemplate = ({ data }: { data: ResumeData }) => {
             <div key={edu.id} className="mb-2">
               <div className="flex justify-between">
                 <span className="font-bold">{edu.school}</span>
-                <span className="text-xs">{edu.startDate} - {edu.endDate}</span>
+                <span className="text-xs">{edu.startMonth} {edu.startYear} - {edu.endMonth === 'Present' ? 'Present' : `${edu.endMonth} ${edu.endYear}`}</span>
               </div>
               <div className="flex justify-between text-xs">
                 <span>{edu.degree}, {edu.major}</span>
-                <span>GPA: {edu.gpa}</span>
+                <span>CGPA: {edu.cgpa}</span>
               </div>
             </div>
           ))}

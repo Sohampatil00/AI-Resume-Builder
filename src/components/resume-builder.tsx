@@ -45,9 +45,11 @@ const educationSchema = z.object({
   school: z.string().min(1, 'School name is required'),
   degree: z.string().min(1, 'Degree is required'),
   major: z.string().optional(),
-  gpa: z.string().optional(),
-  startDate: z.string().optional(),
-  endDate: z.string().optional(),
+  cgpa: z.string().optional(),
+  startMonth: z.string().optional(),
+  startYear: z.string().optional(),
+  endMonth: z.string().optional(),
+  endYear: z.string().optional(),
 });
 
 const experienceSchema = z.object({

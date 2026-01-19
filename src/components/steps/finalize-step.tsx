@@ -2,9 +2,6 @@
 
 import { useState, useRef } from 'react';
 import { useFormContext } from 'react-hook-form';
-import Image from 'next/image';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
 
 import {
   Select,
@@ -20,7 +17,6 @@ import { templates } from '@/lib/templates';
 import { generateResume } from '@/lib/resume-generator';
 import { downloadFile } from '@/lib/download';
 import type { ResumeData } from '@/lib/types';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { useToast } from '@/hooks/use-toast';
 import { resumeSchema } from '../resume-builder';
 import { ModernTemplate } from '../resume-templates/modern-template';
@@ -30,7 +26,6 @@ export function FinalizeStep() {
   const { getValues } = useFormContext();
   const [selectedTemplate, setSelectedTemplate] = useState(templates[0].id);
   const [isGeneratingTex, setIsGeneratingTex] = useState(false);
-  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const { toast } = useToast();
   const resumePreviewRef = useRef<HTMLDivElement>(null);
 
@@ -71,60 +66,6 @@ export function FinalizeStep() {
     setIsGeneratingTex(false);
   };
   
-  const handlePdfDownload = async () => {
-    setIsGeneratingPdf(true);
-    const data = validateData();
-    if (!data) {
-        setIsGeneratingPdf(false);
-        return;
-    }
-    
-    const resumeElement = resumePreviewRef.current;
-    if (resumeElement) {
-        try {
-            const canvas = await html2canvas(resumeElement, {
-                scale: 2, // Higher scale for better quality
-                useCORS: true,
-                backgroundColor: '#ffffff',
-            });
-            const imgData = canvas.toDataURL('image/png');
-            const pdf = new jsPDF({
-                orientation: 'portrait',
-                unit: 'mm',
-                format: 'a4',
-            });
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            
-            let position = 0;
-            let pageHeight = pdf.internal.pageSize.height;
-            let imgHeight = (canvas.height * pdfWidth) / canvas.width;
-            let heightLeft = imgHeight;
-            
-            pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
-            heightLeft -= pageHeight;
-            
-            while (heightLeft > 0) {
-              position = heightLeft - imgHeight;
-              pdf.addPage();
-              pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
-              heightLeft -= pageHeight;
-            }
-
-            pdf.save('resume.pdf');
-        } catch (error) {
-            console.error(error);
-            toast({
-                variant: 'destructive',
-                title: 'PDF Generation Failed',
-                description: 'An error occurred while generating the PDF.',
-            });
-        }
-    }
-
-    setIsGeneratingPdf(false);
-  }
-
-  const currentTemplateImage = PlaceHolderImages.find(img => img.id.includes(selectedTemplate));
   const resumeData = getValues();
   
   const SelectedTemplateComponent = selectedTemplate === 'modern' ? ModernTemplate : ClassicTemplate;
@@ -153,15 +94,7 @@ export function FinalizeStep() {
               </Select>
             </div>
             <div className='flex flex-col space-y-2'>
-                <Button onClick={handlePdfDownload} disabled={isGeneratingPdf || isGeneratingTex} className="w-full">
-                {isGeneratingPdf ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : (
-                    <FileDown className="mr-2 h-4 w-4" />
-                )}
-                Download .pdf File
-                </Button>
-                 <Button onClick={handleTexDownload} disabled={isGeneratingTex || isGeneratingPdf} className="w-full" variant="secondary">
+                 <Button onClick={handleTexDownload} disabled={isGeneratingTex} className="w-full">
                     {isGeneratingTex ? (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     ) : (
@@ -171,25 +104,12 @@ export function FinalizeStep() {
                 </Button>
             </div>
           </div>
-          <div className="flex items-center justify-center rounded-lg border bg-secondary/50 p-4">
-              {currentTemplateImage && (
-                  <Image
-                      src={currentTemplateImage.imageUrl}
-                      alt={currentTemplateImage.description}
-                      width={400}
-                      height={566}
-                      data-ai-hint={currentTemplateImage.imageHint}
-                      className="rounded-md shadow-lg"
-                  />
-              )}
+          <div className="flex items-center justify-center rounded-lg border bg-secondary/50 p-4 overflow-hidden">
+              <div ref={resumePreviewRef} className="transform scale-[0.5] origin-top-left -ml-16 -mt-16 md:scale-[0.6] md:-ml-0 md:-mt-12">
+                <SelectedTemplateComponent data={resumeData as ResumeData} />
+              </div>
           </div>
         </div>
-      </div>
-      {/* Hidden element for PDF generation */}
-      <div className="absolute -left-[9999px] top-0" >
-          <div ref={resumePreviewRef}>
-            <SelectedTemplateComponent data={resumeData as ResumeData} />
-          </div>
       </div>
     </>
   );

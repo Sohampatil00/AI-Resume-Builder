@@ -21,11 +21,11 @@ export const ClassicTemplate = ({ data }: { data: ResumeData }) => {
               <li key={edu.id} className="mb-2">
                 <div className="flex justify-between">
                   <span className="font-bold">{edu.school}</span>
-                  <span>{edu.startDate} - {edu.endDate}</span>
+                  <span>{edu.startMonth} {edu.startYear} - {edu.endMonth === 'Present' ? 'Present' : `${edu.endMonth} ${edu.endYear}`}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>{edu.degree} in {edu.major}</span>
-                  <span>GPA: {edu.gpa}</span>
+                  <span>CGPA: {edu.cgpa}</span>
                 </div>
               </li>
             ))}

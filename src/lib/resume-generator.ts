@@ -35,9 +35,11 @@ const generateModernTemplate = (data: ResumeData, template: string): string => {
   if (data.education.length > 0) {
     const educationItems = data.education
       .map(
-        (edu) =>
-          `\\resumeSubheading{${escapeLatex(edu.school)}}{${escapeLatex(edu.startDate)} - ${escapeLatex(edu.endDate)}}{${escapeLatex(edu.degree)}, ${escapeLatex(edu.major)}}{GPA: ${escapeLatex(edu.gpa)}}`
-      )
+        (edu) => {
+          const endDate = edu.endMonth === 'Present' ? 'Present' : `${escapeLatex(edu.endMonth)} ${escapeLatex(edu.endYear)}`;
+          const startDate = `${escapeLatex(edu.startMonth)} ${escapeLatex(edu.startYear)}`;
+          return `\\resumeSubheading{${escapeLatex(edu.school)}}{${startDate} - ${endDate}}{${escapeLatex(edu.degree)}, ${escapeLatex(edu.major)}}{CGPA: ${escapeLatex(edu.cgpa)}}`
+        })
       .join('\n');
     generated = generated.replace('%%EDUCATION_SECTION%%', `\\section{Education}\\resumeSubHeadingListStart\n${educationItems}\n\\resumeSubHeadingListEnd`);
   } else {
@@ -100,9 +102,11 @@ const generateClassicTemplate = (data: ResumeData, template: string): string => 
         generated = generated.replace('%%WEBSITE_SECTION%%', '');
     }
 
-    const educationItems = data.education.map(edu => 
-        `\\item \\textbf{${escapeLatex(edu.school)}} \\hfill ${escapeLatex(edu.startDate)} - ${escapeLatex(edu.endDate)} \\\\ ${escapeLatex(edu.degree)} in ${escapeLatex(edu.major)} \\hfill GPA: ${escapeLatex(edu.gpa)}`
-    ).join('\n');
+    const educationItems = data.education.map(edu => {
+        const endDate = edu.endMonth === 'Present' ? 'Present' : `${escapeLatex(edu.endMonth)} ${escapeLatex(edu.endYear)}`;
+        const startDate = `${escapeLatex(edu.startMonth)} ${escapeLatex(edu.startYear)}`;
+        return `\\item \\textbf{${escapeLatex(edu.school)}} \\hfill ${startDate} - ${endDate} \\\\ ${escapeLatex(edu.degree)} in ${escapeLatex(edu.major)} \\hfill CGPA: ${escapeLatex(edu.cgpa)}`
+    }).join('\n');
     generated = generated.replace('%%EDUCATION_ITEMS%%', educationItems);
 
     const experienceItems = data.experience.map(exp => 

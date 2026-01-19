@@ -12,9 +12,11 @@ export type Education = {
   school: string;
   degree: string;
   major: string;
-  gpa: string;
-  startDate: string;
-  endDate: string;
+  cgpa: string;
+  startMonth: string;
+  startYear: string;
+  endMonth: string;
+  endYear: string;
 };
 
 export type Experience = {
