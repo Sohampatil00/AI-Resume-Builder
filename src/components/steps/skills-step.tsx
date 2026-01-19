@@ -9,17 +9,9 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Button } from '../ui/button';
-import { Info } from 'lucide-react';
 
 export function SkillsStep() {
-  const { control, setValue } = useFormContext();
-
-  const fillDummyData = () => {
-    setValue('skills.languages', 'Python, PHP, C++, JavaScript, SQL, Bash, JAVA');
-    setValue('skills.frameworks', 'Scikit, NLTK, SpaCy, TensorFlow, Keras, Django, Flask, NodeJS, LAMP');
-    setValue('skills.tools', 'Kubernetes, Docker, GIT, PostgreSQL, MySQL, SQLite');
-  }
+  const { control } = useFormContext();
 
   return (
     <div className="space-y-6">
@@ -27,15 +19,6 @@ export function SkillsStep() {
          <h2 className="text-2xl font-headline font-semibold text-primary">
           Skills
         </h2>
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          onClick={fillDummyData}
-        >
-          <Info className="mr-2 h-4 w-4" />
-          Fill with Dummy Data
-        </Button>
       </div>
       <div className="space-y-4">
         <FormField

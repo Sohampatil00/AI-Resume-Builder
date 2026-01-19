@@ -12,13 +12,13 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { PlusCircle, Trash2, Sparkles, Info } from 'lucide-react';
+import { PlusCircle, Trash2, Sparkles } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { AIDescriptionGenerator } from '../ai-description-generator';
 
 export function ProjectsStep() {
   const { control, setValue, getValues } = useFormContext();
-  const { fields, append, remove, replace } = useFieldArray({
+  const { fields, append, remove } = useFieldArray({
     control,
     name: 'projects',
   });
@@ -38,23 +38,6 @@ export function ProjectsStep() {
     }
   };
 
-  const fillDummyData = () => {
-    replace([
-      {
-        id: crypto.randomUUID(),
-        name: 'Vison - multimedia search engine',
-        technologies: 'NLP, Search Engine, Web Crawlers, Multimedia Processing',
-        description: 'Research oriented, open source, search engine for bringing reverse multimedia search to small & mid scale enterprises.',
-      },
-      {
-        id: crypto.randomUUID(),
-        name: 'Reinforcement Learning based Traffic Control System',
-        technologies: 'Reinforcement Learning, Computer Vision',
-        description: 'AI model to resolve city traffic around 50% faster. Tech: Python, Alibaba Cloud, Raspberry Pi, Arduino, SUMO & OpenCV.',
-      }
-    ]);
-  };
-
   return (
     <>
       <div className="space-y-6">
@@ -63,15 +46,6 @@ export function ProjectsStep() {
             Projects
           </h2>
           <div className="flex items-center gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={fillDummyData}
-            >
-              <Info className="mr-2 h-4 w-4" />
-              Fill with Dummy Data
-            </Button>
             <Button
               type="button"
               variant="outline"

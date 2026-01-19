@@ -11,34 +11,15 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { PlusCircle, Trash2, Info } from 'lucide-react';
+import { PlusCircle, Trash2 } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 
 export function PublicationsStep() {
   const { control } = useFormContext();
-  const { fields, append, remove, replace } = useFieldArray({
+  const { fields, append, remove } = useFieldArray({
     control,
     name: 'publications',
   });
-
-  const fillDummyData = () => {
-    replace([
-      {
-        id: crypto.randomUUID(),
-        title: 'Deep Learning on Web',
-        publisher: 'Packt Publishing',
-        date: 'Nov 2018',
-        description: 'Work in Progress book to be published by Packt Publishing in late 2019. Tech: Django, Python, AWS, GCP, Azure'
-      },
-      {
-        id: crypto.randomUUID(),
-        title: 'Deep Learning on Mobile Devices',
-        publisher: 'Packt Publishing',
-        date: 'Dec 2018',
-        description: 'Work in Progress book to be published by Packt Publishing in late 2019. Tech: Flutter, Android, Firebase, TensorFlow, Python, Dart'
-      }
-    ]);
-  }
 
   return (
     <div className="space-y-6">
@@ -47,15 +28,6 @@ export function PublicationsStep() {
           Publications
         </h2>
         <div className="flex items-center gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={fillDummyData}
-          >
-            <Info className="mr-2 h-4 w-4" />
-            Fill with Dummy Data
-          </Button>
           <Button
             type="button"
             variant="outline"

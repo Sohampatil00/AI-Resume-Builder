@@ -11,36 +11,15 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { PlusCircle, Trash2, Info } from 'lucide-react';
+import { PlusCircle, Trash2 } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 
 export function VolunteerExperienceStep() {
   const { control } = useFormContext();
-  const { fields, append, remove, replace } = useFieldArray({
+  const { fields, append, remove } = useFieldArray({
     control,
     name: 'volunteerExperience',
   });
-
-  const fillDummyData = () => {
-    replace([
-        {
-            id: crypto.randomUUID(),
-            organization: 'Developer Student Clubs NSEC',
-            role: 'Community Lead',
-            startDate: 'Jan 2019',
-            endDate: 'Present',
-            description: 'Conducted online and offline technical & soft-skills training impacting over 3000 students.',
-        },
-        {
-            id: crypto.randomUUID(),
-            organization: 'Google Developers Group Kolkata',
-            role: 'Event Organizer',
-            startDate: 'Jan 2018',
-            endDate: 'Present',
-            description: 'Organized events, conducted workshops and delivered workshops reaching over 7000 developers.',
-        }
-    ]);
-  }
 
   return (
     <div className="space-y-6">
@@ -49,15 +28,6 @@ export function VolunteerExperienceStep() {
           Volunteer Experience
         </h2>
         <div className="flex items-center gap-2">
-            <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={fillDummyData}
-            >
-            <Info className="mr-2 h-4 w-4" />
-            Fill with Dummy Data
-            </Button>
             <Button
             type="button"
             variant="outline"

@@ -10,38 +10,15 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { PlusCircle, Trash2, Info } from 'lucide-react';
+import { PlusCircle, Trash2 } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 
 export function HonorsAwardsStep() {
   const { control } = useFormContext();
-  const { fields, append, remove, replace } = useFieldArray({
+  const { fields, append, remove } = useFieldArray({
     control,
     name: 'honors',
   });
-
-  const fillDummyData = () => {
-    replace([
-      {
-        id: crypto.randomUUID(),
-        title: 'Awarded title of Intel Software Innovator',
-        issuer: 'Intel',
-        date: 'May, 2019',
-      },
-      {
-        id: crypto.randomUUID(),
-        title: "Second Runner's Up at TCS EngiNx Engineering Project Innovation Content",
-        issuer: 'TCS',
-        date: 'September, 2018',
-      },
-      {
-        id: crypto.randomUUID(),
-        title: "Runner's Up at Facebook Developers Circle Hackathon",
-        issuer: 'Facebook',
-        date: 'August, 2017',
-      }
-    ]);
-  };
 
   return (
     <div className="space-y-6">
@@ -50,15 +27,6 @@ export function HonorsAwardsStep() {
           Honors & Awards
         </h2>
         <div className="flex items-center gap-2">
-           <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={fillDummyData}
-          >
-            <Info className="mr-2 h-4 w-4" />
-            Fill with Dummy Data
-          </Button>
           <Button
             type="button"
             variant="outline"
