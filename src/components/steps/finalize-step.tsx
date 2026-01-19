@@ -77,8 +77,11 @@ export function FinalizeStep() {
     }
 
     setIsGeneratingPdf(true);
-    await new Promise(resolve => setTimeout(resolve, 500));
+    
     try {
+        // Give browser time to render fonts
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
         const previewElement = resumePreviewRef.current.querySelector(
             '[data-html2canvas-target]'
         ) as HTMLElement;
@@ -88,8 +91,10 @@ export function FinalizeStep() {
         }
 
         const canvas = await html2canvas(previewElement, {
-            scale: 4,
+            scale: 2, // Using a more moderate scale
             useCORS: true,
+            logging: false, // Turn off logging
+            backgroundColor: '#ffffff', // Explicitly set background
         });
         
         const imgData = canvas.toDataURL('image/png');
@@ -110,7 +115,7 @@ export function FinalizeStep() {
         toast({
             variant: 'destructive',
             title: 'PDF Generation Failed',
-            description: 'An error occurred while generating the PDF.',
+            description: error instanceof Error ? error.message : 'An unknown error occurred while generating the PDF.',
         });
     } finally {
         setIsGeneratingPdf(false);
