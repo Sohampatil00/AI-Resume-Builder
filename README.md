@@ -23,6 +23,8 @@
 ## 📸 Screenshots
 
 *Screenshots of the application will be added here.*
+<img width="1793" height="1341" alt="Screenshot 2026-01-20 092145" src="https://github.com/user-attachments/assets/7b57cfa4-9a6c-47ca-82c5-4b5d6ecae789" />
+<img width="1626" height="1369" alt="Screenshot 2026-01-20 092205" src="https://github.com/user-attachments/assets/394ca0d1-75b2-4910-b9c5-606577b89239" />
 
 ---
 
