@@ -107,14 +107,14 @@ export function FinalizeStep() {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       const canvas = await html2canvas(elementToRender, {
-        scale: 4, // Increased scale for much higher resolution
+        scale: 2, // Use a lower scale to reduce file size
         useCORS: true,
         logging: false,
         backgroundColor: '#ffffff',
         letterRendering: true,
       });
 
-      const imgData = canvas.toDataURL('image/png', 1.0);
+      const imgData = canvas.toDataURL('image/jpeg', 0.98); // Use JPEG for smaller file size
       const pdf = new jsPDF({
         orientation: 'portrait',
         unit: 'mm',
@@ -124,7 +124,7 @@ export function FinalizeStep() {
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
 
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight); // Use JPEG
 
       // Add clickable links
       const linkElements = elementToRender.querySelectorAll('a');
