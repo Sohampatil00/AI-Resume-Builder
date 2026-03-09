@@ -20,7 +20,7 @@ import { generateResume } from '@/lib/resume-generator';
 import { downloadFile } from '@/lib/download';
 import type { ResumeData } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
-import { resumeSchema } from '../resume-builder';
+
 import { ModernTemplate } from '../resume-templates/modern-template';
 import { ElegantTemplate } from '../resume-templates/elegant-template';
 import { ClassicTemplate } from '../resume-templates/classic-template';
@@ -36,17 +36,7 @@ export function FinalizeStep() {
 
   const validateData = () => {
     const data = getValues();
-    const validationResult = resumeSchema.safeParse(data);
-
-    if (!validationResult.success) {
-      toast({
-        variant: 'destructive',
-        title: 'Validation Error',
-        description: 'Please go back and fill all required fields correctly.',
-      });
-      return null;
-    }
-    return validationResult.data as ResumeData;
+    return data as ResumeData;
   }
 
   const handleTexDownload = async () => {
